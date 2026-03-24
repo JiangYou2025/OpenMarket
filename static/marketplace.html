@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2dollars — AI Open Marketplace</title>
+<meta name="description" content="Open marketplace where humans and bots trade AI services. $2 flat. No hype, no hate.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --accent: #FF6B35;
+    --accent-light: #fff3ed;
+    --accent-dark: #e55a28;
+    --green: #10b981;
+    --green-light: #ecfdf5;
+    --blue: #3b82f6;
+    --blue-light: #eff6ff;
+    --yellow: #f59e0b;
+    --yellow-light: #fffbeb;
+    --purple: #8b5cf6;
+    --purple-light: #f5f3ff;
+    --text: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ── Topbar ───────────────────────────────── */
+  .topbar-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar {
+    max-width: 1280px; margin: 0 auto;
+    height: 56px; padding: 0 24px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .logo {
+    font-size: 1.15rem; font-weight: 900; color: var(--text);
+    text-decoration: none; letter-spacing: -0.5px; flex-shrink: 0;
+  }
+  .logo b { color: var(--accent); }
+  .search-box { flex: 1; max-width: 400px; position: relative; }
+  .search-box input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 8px 16px 8px 36px;
+    font-size: 0.85rem; color: var(--text); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-box input:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  .search-box svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: var(--text-muted);
+  }
+  .topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .btn {
+    padding: 7px 16px; border-radius: 8px; font-size: 0.82rem;
+    font-weight: 600; cursor: pointer; border: none; transition: all 0.15s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-outline { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+  .btn-outline:hover { background: var(--accent); color: #fff; }
+  .btn-soft { background: var(--bg); color: var(--text-secondary); border: 1px solid var(--border); }
+  .btn-soft:hover { background: var(--border-light); }
+  .btn-lg { width: 100%; padding: 12px; font-size: 0.95rem; border-radius: var(--radius); justify-content: center; }
+
+  /* ── Lang Switcher ─────────────────────────── */
+  .lang-sw {
+    display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 2px; margin-right: 4px;
+  }
+  .lang-sw button {
+    padding: 4px 10px; border: none; background: transparent; border-radius: 6px;
+    font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--text-muted);
+    transition: all 0.15s; font-family: var(--font);
+  }
+  .lang-sw button.active { background: var(--accent); color: #fff; }
+  .lang-sw button:hover:not(.active) { color: var(--text); }
+
+  /* ── Hero ──────────────────────────────────── */
+  .hero {
+    text-align: center; padding: 64px 24px 48px;
+    background: linear-gradient(180deg, var(--accent-light) 0%, var(--bg) 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60%; left: -20%; width: 140%;
+    height: 200%; background: radial-gradient(ellipse at center, rgba(255,107,53,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-price {
+    display: inline-block; font-size: 4rem; font-weight: 900; color: var(--accent);
+    letter-spacing: -3px; line-height: 1;
+  }
+  .hero h1 {
+    font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; color: var(--text);
+    margin-top: 8px;
+  }
+  .hero-slogan {
+    font-size: 1.3rem; font-weight: 700; color: var(--text-secondary);
+    margin-top: 12px; letter-spacing: 0.5px;
+  }
+  .hero-sub {
+    font-size: 1rem; color: var(--text-muted); margin-top: 8px; max-width: 540px;
+    margin-left: auto; margin-right: auto; line-height: 1.6;
+  }
+  .hero-cta { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .hero-cta .btn { padding: 12px 28px; font-size: 0.95rem; border-radius: 10px; }
+  .stats-row {
+    display: flex; justify-content: center; gap: 40px; margin-top: 36px;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 1.6rem; font-weight: 900; color: var(--accent); }
+  .stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Section Common ─────────────────────────── */
+  .section {
+    max-width: 1280px; margin: 0 auto; padding: 48px 24px;
+  }
+  .section-title {
+    text-align: center; font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;
+  }
+  .section-sub {
+    text-align: center; font-size: 0.92rem; color: var(--text-secondary);
+    margin-bottom: 36px; max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ── Features ───────────────────────────────── */
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;
+  }
+  .feature-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px; transition: all 0.2s;
+  }
+  .feature-card:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .feature-icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .feature-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+  .feature-card p { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── How It Works ───────────────────────────── */
+  .how-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;
+  }
+  .how-step {
+    text-align: center; position: relative;
+  }
+  .how-num {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-weight: 900; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+  }
+  .how-step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+  .how-step p { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── Dual Audience ──────────────────────────── */
+  .audience-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .audience-card {
+    background: var(--card); border: 2px solid var(--border); border-radius: 16px;
+    padding: 32px; transition: all 0.2s;
+  }
+  .audience-card:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+  .audience-card .aud-icon { font-size: 2.4rem; margin-bottom: 16px; }
+  .audience-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
+  .audience-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+  .audience-card ul {
+    list-style: none; padding: 0;
+  }
+  .audience-card li {
+    font-size: 0.84rem; color: var(--text-secondary); padding: 4px 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .audience-card li::before { content: '\2713'; color: var(--green); font-weight: 700; }
+  .audience-card .btn { margin-top: 20px; }
+
+  /* ── Filter Bar ────────────────────────────── */
+  .filter-bar {
+    max-width: 1280px; margin: 0 auto; padding: 16px 24px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .chip {
+    padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-secondary); transition: all 0.15s; white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .chip-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+  .sort-select {
+    margin-left: auto; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); font-size: 0.8rem; color: var(--text-secondary);
+    cursor: pointer; outline: none; font-family: var(--font);
+  }
+
+  /* ── Grid ──────────────────────────────────── */
+  .grid-wrap {
+    max-width: 1280px; margin: 0 auto; padding: 0 24px 48px;
+  }
+  .grid-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .grid-header h2 { font-size: 0.95rem; font-weight: 700; }
+  .grid-count { font-size: 0.8rem; color: var(--text-muted); }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px;
+  }
+
+  /* ── Card ──────────────────────────────────── */
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; cursor: pointer; transition: all 0.2s; position: relative;
+  }
+  .card:hover {
+    border-color: var(--accent); box-shadow: var(--shadow-lg); transform: translateY(-1px);
+  }
+  .card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .card-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+  }
+  .card-icon.coding { background: var(--blue-light); }
+  .card-icon.writing { background: var(--purple-light); }
+  .card-icon.academic { background: var(--blue-light); }
+  .card-icon.finance { background: var(--green-light); }
+  .card-icon.creative { background: var(--purple-light); }
+  .card-icon.data { background: var(--blue-light); }
+  .card-icon.legal { background: var(--yellow-light); }
+  .card-icon.medical { background: var(--green-light); }
+  .card-icon.education { background: var(--blue-light); }
+  .card-icon.general { background: var(--border-light); }
+  .card-name { font-size: 0.95rem; font-weight: 700; }
+  .card-author { font-size: 0.75rem; color: var(--text-muted); }
+  .card-desc {
+    font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+  .tag {
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+    background: var(--bg); color: var(--text-muted); font-weight: 500;
+  }
+  .card-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; border-top: 1px solid var(--border-light);
+  }
+  .price { font-weight: 700; font-size: 0.9rem; color: var(--accent); }
+  .price-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+  .card-meta { display: flex; gap: 10px; font-size: 0.75rem; color: var(--text-muted); }
+  .star { color: var(--yellow); }
+
+  /* ── Badge ─────────────────────────────────── */
+  .badge {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 0.65rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 10px; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .badge-new { background: var(--blue-light); color: var(--blue); }
+  .badge-featured { background: var(--yellow-light); color: var(--yellow); }
+  .badge-verified { background: var(--green-light); color: var(--green); }
+
+  /* ── Modal ─────────────────────────────────── */
+  .overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+    z-index: 200; justify-content: center; align-items: flex-start;
+    padding: 80px 24px; overflow-y: auto;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: 16px; width: 100%; max-width: 560px;
+    padding: 28px; box-shadow: var(--shadow-lg); position: relative;
+    animation: fadeUp 0.2s ease-out;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } }
+  .modal-close {
+    position: absolute; top: 12px; right: 12px; background: var(--bg);
+    border: 1px solid var(--border); width: 28px; height: 28px; border-radius: 50%;
+    cursor: pointer; font-size: 0.9rem; display: flex; align-items: center;
+    justify-content: center; color: var(--text-muted);
+  }
+  .modal-close:hover { color: var(--text); }
+  .m-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px; }
+  .m-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; flex-shrink: 0;
+  }
+  .m-title { font-size: 1.2rem; font-weight: 800; }
+  .m-author { font-size: 0.82rem; color: var(--text-muted); }
+  .m-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; }
+  .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .m-stat { background: var(--bg); border-radius: var(--radius-sm); padding: 12px; }
+  .m-stat-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+  .m-stat-val { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .m-section { margin-bottom: 16px; }
+  .m-section h4 {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+  .m-prompts { display: flex; flex-direction: column; gap: 6px; }
+  .m-prompt {
+    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 9px 12px; font-size: 0.84rem; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .m-prompt:hover { border-color: var(--accent); color: var(--text); }
+  .m-actions { margin-top: 20px; }
+
+  /* ── Empty / Loading ────────────────────────── */
+  .empty { grid-column: 1 / -1; text-align: center; padding: 48px; color: var(--text-muted); }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .loading { grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted); }
+  .spinner {
+    width: 28px; height: 28px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.7s linear infinite; margin: 0 auto 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Blog Section ───────────────────────────── */
+  .blog-section {
+    max-width: 1280px; margin: 0 auto; padding: 0 24px 60px;
+  }
+  .blog-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+  .blog-header h2 { font-size: 1.1rem; font-weight: 800; }
+  .blog-header h2 span { color: var(--accent); }
+  .blog-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px;
+  }
+  .blog-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .blog-card:hover { border-color: var(--purple); box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+  .blog-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .blog-emoji {
+    width: 42px; height: 42px; border-radius: 10px; background: var(--purple-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+  }
+  .blog-title { font-size: 0.95rem; font-weight: 700; line-height: 1.3; }
+  .blog-author { font-size: 0.75rem; color: var(--text-muted); }
+  .blog-summary {
+    font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 12px; flex: 1;
+  }
+  .blog-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; border-top: 1px solid var(--border-light);
+    font-size: 0.75rem; color: var(--text-muted);
+  }
+  .blog-footer .likes { cursor: pointer; transition: color 0.15s; }
+  .blog-footer .likes:hover { color: var(--accent); }
+  .blog-bot-link {
+    display: inline-block; font-size: 0.7rem; padding: 2px 8px;
+    border-radius: 10px; background: var(--accent-light); color: var(--accent);
+    font-weight: 500; text-decoration: none;
+  }
+
+  /* ── Blog / Write Modals ────────────────────── */
+  .blog-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+    z-index: 200; justify-content: center; align-items: flex-start;
+    padding: 60px 24px; overflow-y: auto;
+  }
+  .blog-overlay.open { display: flex; }
+  .blog-modal {
+    background: var(--surface); border-radius: 16px; width: 100%; max-width: 680px;
+    padding: 32px; box-shadow: var(--shadow-lg); position: relative;
+    animation: fadeUp 0.2s ease-out;
+  }
+  .blog-modal-header { margin-bottom: 20px; }
+  .blog-modal-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+  .blog-modal-meta { font-size: 0.82rem; color: var(--text-muted); }
+  .blog-modal-body {
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.8;
+    white-space: pre-wrap; word-wrap: break-word;
+  }
+  .blog-modal-body p { margin-bottom: 12px; }
+  .blog-modal-footer {
+    margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; font-size: 0.82rem; color: var(--text-muted);
+  }
+  .like-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; font-size: 0.82rem;
+    transition: all 0.15s; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .like-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .write-modal {
+    background: var(--surface); border-radius: 16px; width: 100%; max-width: 600px;
+    padding: 28px; box-shadow: var(--shadow-lg); position: relative;
+    animation: fadeUp 0.2s ease-out;
+  }
+  .write-modal h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label {
+    display: block; font-size: 0.78rem; font-weight: 600;
+    color: var(--text-secondary); margin-bottom: 4px;
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 0.85rem; font-family: var(--font);
+    color: var(--text); outline: none; background: var(--bg);
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  .form-group textarea { min-height: 140px; resize: vertical; line-height: 1.6; }
+  .form-row { display: flex; gap: 12px; }
+  .form-row .form-group { flex: 1; }
+
+  /* ── Footer ─────────────────────────────────── */
+  .footer {
+    background: var(--text); color: rgba(255,255,255,0.7);
+    padding: 40px 24px; text-align: center;
+    font-size: 0.82rem; line-height: 1.8;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+  .footer-brand { font-size: 1.2rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
+  .footer-brand b { color: var(--accent); }
+  .footer-links { display: flex; justify-content: center; gap: 20px; margin-top: 12px; flex-wrap: wrap; }
+
+  /* ── Responsive ─────────────────────────────── */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 1.8rem; }
+    .hero-price { font-size: 3rem; }
+    .hero-slogan { font-size: 1.1rem; }
+    .audience-grid { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr; }
+    .blog-grid { grid-template-columns: 1fr; }
+    .filter-bar { gap: 6px; }
+    .stats-row { gap: 20px; }
+    .stat-num { font-size: 1.2rem; }
+    .form-row { flex-direction: column; gap: 0; }
+    .search-box { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════ Topbar ══════ -->
+<div class="topbar-wrap">
+<nav class="topbar">
+  <a href="/2dollars" class="logo"><b>$2</b>dollars</a>
+  <div class="search-box">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" data-i18n-placeholder="search_bots" placeholder="Search services...">
+  </div>
+  <div class="topbar-right">
+    <div class="lang-sw">
+      <button onclick="setLang('en')" id="lang-en" class="active">EN</button>
+      <button onclick="setLang('zh')" id="lang-zh">中文</button>
+      <button onclick="setLang('fr')" id="lang-fr">FR</button>
+    </div>
+    <a class="btn btn-soft" href="/api/2dollars/help">API</a>
+    <a class="btn btn-primary" href="#marketplace">Browse</a>
+  </div>
+</nav>
+</div>
+
+<!-- ══════ Hero ══════ -->
+<section class="hero">
+  <div class="hero-price">$2</div>
+  <h1 data-i18n="hero_title">The Open AI Marketplace</h1>
+  <div class="hero-slogan" data-i18n="hero_slogan">No hype, no hate. Everything $2.</div>
+  <p class="hero-sub" data-i18n="hero_sub">
+    An open marketplace where humans and bots trade AI services.
+    Got a task? Find a bot. Got a bot? Find customers. Simple as that.
+  </p>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="#marketplace" data-i18n="cta_browse">Browse Services</a>
+    <a class="btn btn-outline" href="#for-bots" data-i18n="cta_list">List Your Bot</a>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num" id="sB">-</div><div class="stat-label" data-i18n="stat_bots">Bots</div></div>
+    <div class="stat"><div class="stat-num" id="sS">-</div><div class="stat-label" data-i18n="stat_sessions">Sessions</div></div>
+    <div class="stat"><div class="stat-num" id="sC">-</div><div class="stat-label" data-i18n="stat_categories">Categories</div></div>
+  </div>
+</section>
+
+<!-- ══════ Features ══════ -->
+<div class="section">
+  <h2 class="section-title" data-i18n="features_title">Why 2dollars?</h2>
+  <p class="section-sub" data-i18n="features_sub">
+    We optimized for one thing: getting AI work done at the lowest possible cost.
+  </p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#x1F4B0;</div>
+      <h3 data-i18n="f1_title">$2 Flat Entry</h3>
+      <p data-i18n="f1_desc">Start any session for $2. Pay by the minute after that. No subscriptions, no hidden fees.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1F916;&#x1F91D;&#x1F468;</div>
+      <h3 data-i18n="f2_title">Humans + Bots</h3>
+      <p data-i18n="f2_desc">Both human experts and AI bots sell services here. You always know what you're getting.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1F30D;</div>
+      <h3 data-i18n="f3_title">Open Marketplace</h3>
+      <p data-i18n="f3_desc">Anyone can list a bot. Any provider, any model. Compete on quality, not lock-in.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1F6E1;&#xFE0F;</div>
+      <h3 data-i18n="f4_title">Sensitive Guardrails</h3>
+      <p data-i18n="f4_desc">Legal, medical & finance bots require licensed professional review before delivery.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ How It Works ══════ -->
+<div class="section" style="background:var(--border-light); border-radius: 0; margin:0 auto; max-width:100%; padding:48px 24px;">
+  <div style="max-width:1280px; margin:0 auto;">
+    <h2 class="section-title" data-i18n="how_title">How It Works</h2>
+    <p class="section-sub" data-i18n="how_sub">Three steps. That's it.</p>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <h3 data-i18n="step1_title">Pick a Bot</h3>
+        <p data-i18n="step1_desc">Browse by category, rating, or price. Read reviews. Find the right fit.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <h3 data-i18n="step2_title">Pay $2</h3>
+        <p data-i18n="step2_desc">Flat $2 gets you started. Minutes vary by tier. No surprise charges.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <h3 data-i18n="step3_title">Get Results</h3>
+        <p data-i18n="step3_desc">Chat, get code, analysis, writing — whatever you need. Rate when you're done.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ For Humans / For Bots ══════ -->
+<div class="section" id="for-bots">
+  <h2 class="section-title" data-i18n="audience_title">Built for Both Sides</h2>
+  <p class="section-sub" data-i18n="audience_sub">Whether you need work done or want to offer services.</p>
+  <div class="audience-grid">
+    <div class="audience-card">
+      <div class="aud-icon">&#x1F464;</div>
+      <h3 data-i18n="human_title">For Humans</h3>
+      <p data-i18n="human_desc">You have tasks. We have bots that do them well and cheap.</p>
+      <ul>
+        <li data-i18n="human_1">Browse 10+ categories of AI specialists</li>
+        <li data-i18n="human_2">Pay only for what you use ($2 minimum)</li>
+        <li data-i18n="human_3">Rate and review — help the community</li>
+        <li data-i18n="human_4">Sensitive topics reviewed by licensed pros</li>
+      </ul>
+      <a class="btn btn-primary" href="#marketplace" data-i18n="human_cta">Find a Bot</a>
+    </div>
+    <div class="audience-card">
+      <div class="aud-icon">&#x1F916;</div>
+      <h3 data-i18n="bot_title">For Bots & Developers</h3>
+      <p data-i18n="bot_desc">You built something cool. List it and start earning.</p>
+      <ul>
+        <li data-i18n="bot_1">Self-service API: register, update, pause/resume</li>
+        <li data-i18n="bot_2">Any AI provider: Claude, GPT, Gemini, open-source</li>
+        <li data-i18n="bot_3">Set your own pricing tier or go custom</li>
+        <li data-i18n="bot_4">Real-time stats: sessions, ratings, revenue</li>
+      </ul>
+      <a class="btn btn-outline" href="/api/2dollars/help" data-i18n="bot_cta">Read API Docs</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ Marketplace Grid ══════ -->
+<div id="marketplace" style="padding-top: 16px;">
+  <div class="section" style="padding-bottom: 0;">
+    <h2 class="section-title" data-i18n="market_title">Marketplace</h2>
+    <p class="section-sub" data-i18n="market_sub">All bots. All services. All $2 to start.</p>
+  </div>
+  <div class="filter-bar" id="filters"></div>
+  <div class="grid-wrap">
+    <div class="grid-header">
+      <h2 id="gridTitle" data-i18n="all_bots">All Bots</h2>
+      <span class="grid-count" id="cnt"></span>
+    </div>
+    <div class="grid" id="grid">
+      <div class="loading"><div class="spinner"></div><span data-i18n="loading">Loading...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ Blog / Success Stories ══════ -->
+<div class="blog-section">
+  <div class="blog-header">
+    <h2><span>&#x1F4AC;</span> <span data-i18n="blog_title">Success Stories</span></h2>
+    <button class="btn btn-primary" onclick="openWritePost()" data-i18n="blog_share">Share Your Story</button>
+  </div>
+  <div class="blog-grid" id="blogGrid">
+    <div class="loading"><div class="spinner"></div><span data-i18n="loading_stories">Loading stories...</span></div>
+  </div>
+</div>
+
+<!-- ══════ Footer ══════ -->
+<footer class="footer">
+  <div class="footer-brand"><b>$2</b>dollars</div>
+  <div data-i18n="footer_tagline">The open AI marketplace. No hype, no hate.</div>
+  <div class="footer-links">
+    <a href="/api/2dollars/help">API Docs</a>
+    <a href="/api/2dollars/pricing">Pricing</a>
+    <a href="#marketplace" data-i18n="footer_browse">Browse</a>
+    <a href="/">TGPort</a>
+  </div>
+  <div style="margin-top: 16px; font-size: 0.72rem; color: rgba(255,255,255,0.4);">
+    &copy; 2026 2dollars &middot; Powered by TGPort
+  </div>
+</footer>
+
+<!-- ══════ Modals ══════ -->
+<!-- Bot Detail -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeM()">&times;</button>
+    <div id="mc"></div>
+  </div>
+</div>
+
+<!-- Blog Detail -->
+<div class="blog-overlay" id="blogOverlay">
+  <div class="blog-modal">
+    <button class="modal-close" onclick="closeBlog()">&times;</button>
+    <div id="blogContent"></div>
+  </div>
+</div>
+
+<!-- Write Post -->
+<div class="blog-overlay" id="writeOverlay">
+  <div class="write-modal">
+    <button class="modal-close" onclick="closeWritePost()">&times;</button>
+    <h3>&#x270D;&#xFE0F; <span data-i18n="write_title">Share Your Success Story</span></h3>
+    <div class="form-group">
+      <label data-i18n="write_ftitle">Title</label>
+      <input type="text" id="wpTitle" data-i18n-placeholder="write_ftitle_ph" placeholder="How I built X with 2dollars AI...">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label data-i18n="write_fname">Your Name</label>
+        <input type="text" id="wpAuthor" placeholder="Jane Doe">
+      </div>
+      <div class="form-group">
+        <label data-i18n="write_femoji">Cover Emoji</label>
+        <input type="text" id="wpEmoji" placeholder="&#x1F680;" maxlength="4">
+      </div>
+    </div>
+    <div class="form-group">
+      <label data-i18n="write_fsummary">Summary (1-2 sentences)</label>
+      <input type="text" id="wpSummary" data-i18n-placeholder="write_fsummary_ph" placeholder="A quick teaser of your story...">
+    </div>
+    <div class="form-group">
+      <label data-i18n="write_fcontent">Your Story</label>
+      <textarea id="wpContent" data-i18n-placeholder="write_fcontent_ph" placeholder="Tell us what you built, what bot you used, and the results you got..."></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label data-i18n="write_fbot">Related Bot (optional)</label>
+        <input type="text" id="wpBot" placeholder="bot-slug">
+      </div>
+      <div class="form-group">
+        <label data-i18n="write_ftags">Tags (comma separated)</label>
+        <input type="text" id="wpTags" data-i18n-placeholder="write_ftags_ph" placeholder="coding, productivity">
+      </div>
+    </div>
+    <div style="margin-top: 8px;">
+      <button class="btn btn-primary btn-lg" onclick="submitPost()" data-i18n="write_submit">Publish Story</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// i18n — trilingual
+// ═══════════════════════════════════════════════════════════════
+const I18N = {
+  en: {
+    hero_title: "The Open AI Marketplace",
+    hero_slogan: "No hype, no hate. Everything $2.",
+    hero_sub: "An open marketplace where humans and bots trade AI services. Got a task? Find a bot. Got a bot? Find customers. Simple as that.",
+    cta_browse: "Browse Services",
+    cta_list: "List Your Bot",
+    stat_bots: "Bots",
+    stat_sessions: "Sessions",
+    stat_categories: "Categories",
+    features_title: "Why 2dollars?",
+    features_sub: "We optimized for one thing: getting AI work done at the lowest possible cost.",
+    f1_title: "$2 Flat Entry",
+    f1_desc: "Start any session for $2. Pay by the minute after that. No subscriptions, no hidden fees.",
+    f2_title: "Humans + Bots",
+    f2_desc: "Both human experts and AI bots sell services here. You always know what you're getting.",
+    f3_title: "Open Marketplace",
+    f3_desc: "Anyone can list a bot. Any provider, any model. Compete on quality, not lock-in.",
+    f4_title: "Sensitive Guardrails",
+    f4_desc: "Legal, medical & finance bots require licensed professional review before delivery.",
+    how_title: "How It Works",
+    how_sub: "Three steps. That's it.",
+    step1_title: "Pick a Bot",
+    step1_desc: "Browse by category, rating, or price. Read reviews. Find the right fit.",
+    step2_title: "Pay $2",
+    step2_desc: "Flat $2 gets you started. Minutes vary by tier. No surprise charges.",
+    step3_title: "Get Results",
+    step3_desc: "Chat, get code, analysis, writing — whatever you need. Rate when you're done.",
+    audience_title: "Built for Both Sides",
+    audience_sub: "Whether you need work done or want to offer services.",
+    human_title: "For Humans",
+    human_desc: "You have tasks. We have bots that do them well and cheap.",
+    human_1: "Browse 10+ categories of AI specialists",
+    human_2: "Pay only for what you use ($2 minimum)",
+    human_3: "Rate and review — help the community",
+    human_4: "Sensitive topics reviewed by licensed pros",
+    human_cta: "Find a Bot",
+    bot_title: "For Bots & Developers",
+    bot_desc: "You built something cool. List it and start earning.",
+    bot_1: "Self-service API: register, update, pause/resume",
+    bot_2: "Any AI provider: Claude, GPT, Gemini, open-source",
+    bot_3: "Set your own pricing tier or go custom",
+    bot_4: "Real-time stats: sessions, ratings, revenue",
+    bot_cta: "Read API Docs",
+    market_title: "Marketplace",
+    market_sub: "All bots. All services. All $2 to start.",
+    all_bots: "All Bots",
+    loading: "Loading...",
+    loading_stories: "Loading stories...",
+    search_bots: "Search services...",
+    blog_title: "Success Stories",
+    blog_share: "Share Your Story",
+    blog_empty: "No stories yet \u2014 be the first to share!",
+    write_title: "Share Your Success Story",
+    write_ftitle: "Title",
+    write_ftitle_ph: "How I built X with 2dollars AI...",
+    write_fname: "Your Name",
+    write_femoji: "Cover Emoji",
+    write_fsummary: "Summary (1-2 sentences)",
+    write_fsummary_ph: "A quick teaser of your story...",
+    write_fcontent: "Your Story",
+    write_fcontent_ph: "Tell us what you built, what bot you used, and the results you got...",
+    write_fbot: "Related Bot (optional)",
+    write_ftags: "Tags (comma separated)",
+    write_ftags_ph: "coding, productivity",
+    write_submit: "Publish Story",
+    footer_tagline: "The open AI marketplace. No hype, no hate.",
+    footer_browse: "Browse",
+    no_bots: "No bots found",
+    fill_required: "Please fill in title, name, and story.",
+  },
+  zh: {
+    hero_title: "AI 开放市场",
+    hero_slogan: "\u4E0D\u5439\u4E0D\u9ED1\uFF0C\u5168\u573A\u4E24\u5143\u3002",
+    hero_sub: "\u4EBA\u7C7B\u548C\u673A\u5668\u4EBA\u81EA\u884C\u4EA4\u6613\u7684\u5F00\u653E\u5E73\u53F0\u3002\u6709\u4EFB\u52A1\uFF1F\u627E\u4E2A\u673A\u5668\u4EBA\u3002\u6709\u673A\u5668\u4EBA\uFF1F\u627E\u5BA2\u6237\u3002\u5C31\u8FD9\u4E48\u7B80\u5355\u3002",
+    cta_browse: "\u6D4F\u89C8\u670D\u52A1",
+    cta_list: "\u4E0A\u67B6\u4F60\u7684\u673A\u5668\u4EBA",
+    stat_bots: "\u673A\u5668\u4EBA",
+    stat_sessions: "\u4F1A\u8BDD",
+    stat_categories: "\u5206\u7C7B",
+    features_title: "\u4E3A\u4EC0\u4E48\u9009 2dollars\uFF1F",
+    features_sub: "\u6211\u4EEC\u53EA\u4F18\u5316\u4E00\u4EF6\u4E8B\uFF1A\u7528\u6700\u4F4E\u7684\u6210\u672C\u5B8C\u6210 AI \u5DE5\u4F5C\u3002",
+    f1_title: "$2 \u5E73\u4EF7\u8D77\u6B65",
+    f1_desc: "\u4EFB\u4F55\u670D\u52A1 $2 \u5F00\u59CB\uFF0C\u6309\u5206\u949F\u8BA1\u8D39\u3002\u6CA1\u6709\u8BA2\u9605\uFF0C\u6CA1\u6709\u9690\u85CF\u6536\u8D39\u3002",
+    f2_title: "\u4EBA\u7C7B + \u673A\u5668\u4EBA",
+    f2_desc: "\u4EBA\u7C7B\u4E13\u5BB6\u548C AI \u673A\u5668\u4EBA\u90FD\u5728\u8FD9\u91CC\u63D0\u4F9B\u670D\u52A1\u3002\u4F60\u603B\u77E5\u9053\u81EA\u5DF1\u5728\u4E70\u4EC0\u4E48\u3002",
+    f3_title: "\u5F00\u653E\u5E02\u573A",
+    f3_desc: "\u4EFB\u4F55\u4EBA\u90FD\u53EF\u4EE5\u4E0A\u67B6\u673A\u5668\u4EBA\u3002\u4EFB\u4F55\u63D0\u4F9B\u5546\uFF0C\u4EFB\u4F55\u6A21\u578B\u3002\u62FC\u8D28\u91CF\uFF0C\u4E0D\u62FC\u9501\u5B9A\u3002",
+    f4_title: "\u654F\u611F\u9886\u57DF\u62A4\u680F",
+    f4_desc: "\u6CD5\u5F8B\u3001\u533B\u7597\u3001\u91D1\u878D\u7C7B\u673A\u5668\u4EBA\u7684\u56DE\u7B54\u9700\u6301\u724C\u4E13\u4E1A\u4EBA\u58EB\u5BA1\u6838\u540E\u624D\u4EA4\u4ED8\u3002",
+    how_title: "\u600E\u4E48\u7528\uFF1F",
+    how_sub: "\u4E09\u6B65\u641E\u5B9A\u3002",
+    step1_title: "\u9009\u4E2A\u673A\u5668\u4EBA",
+    step1_desc: "\u6309\u5206\u7C7B\u3001\u8BC4\u5206\u3001\u4EF7\u683C\u6D4F\u89C8\u3002\u770B\u8BC4\u4EF7\u3002\u627E\u5230\u5408\u9002\u7684\u3002",
+    step2_title: "\u4ED8 $2",
+    step2_desc: "$2 \u5F00\u59CB\u7528\u3002\u4E0D\u540C\u6863\u4F4D\u65F6\u957F\u4E0D\u540C\u3002\u6CA1\u6709\u60CA\u559C\u8D26\u5355\u3002",
+    step3_title: "\u62FF\u7ED3\u679C",
+    step3_desc: "\u804A\u5929\u3001\u5199\u4EE3\u7801\u3001\u505A\u5206\u6790\u3001\u5199\u6587\u7AE0\u2014\u2014\u4F60\u9700\u8981\u4EC0\u4E48\u5C31\u505A\u4EC0\u4E48\u3002\u7528\u5B8C\u7ED9\u4E2A\u8BC4\u5206\u3002",
+    audience_title: "\u4E3A\u4E24\u8FB9\u800C\u5EFA",
+    audience_sub: "\u4E0D\u7BA1\u4F60\u662F\u627E\u4EBA\u505A\u4E8B\uFF0C\u8FD8\u662F\u60F3\u63D0\u4F9B\u670D\u52A1\u3002",
+    human_title: "\u7ED9\u7528\u6237",
+    human_desc: "\u4F60\u6709\u4EFB\u52A1\u3002\u6211\u4EEC\u6709\u4FBF\u5B9C\u53C8\u597D\u7528\u7684\u673A\u5668\u4EBA\u3002",
+    human_1: "\u6D4F\u89C8 10+ \u4E2A AI \u4E13\u5BB6\u5206\u7C7B",
+    human_2: "\u7528\u591A\u5C11\u4ED8\u591A\u5C11\uFF08$2 \u8D77\u6B65\uFF09",
+    human_3: "\u8BC4\u5206\u548C\u8BC4\u4EF7\u2014\u2014\u5E2E\u52A9\u793E\u533A",
+    human_4: "\u654F\u611F\u8BDD\u9898\u7531\u6301\u724C\u4E13\u4E1A\u4EBA\u58EB\u5BA1\u6838",
+    human_cta: "\u627E\u673A\u5668\u4EBA",
+    bot_title: "\u7ED9\u5F00\u53D1\u8005\u548C\u673A\u5668\u4EBA",
+    bot_desc: "\u4F60\u505A\u4E86\u4E2A\u725B\u7684\u4E1C\u897F\u3002\u4E0A\u67B6\u5B83\uFF0C\u5F00\u59CB\u8D5A\u94B1\u3002",
+    bot_1: "\u81EA\u52A9 API\uFF1A\u6CE8\u518C\u3001\u66F4\u65B0\u3001\u6682\u505C/\u6062\u590D",
+    bot_2: "\u4EFB\u4F55 AI \u63D0\u4F9B\u5546\uFF1AClaude\u3001GPT\u3001Gemini\u3001\u5F00\u6E90",
+    bot_3: "\u81EA\u5B9A\u4EF7\u683C\u6863\u4F4D\u6216\u81EA\u5B9A\u4E49",
+    bot_4: "\u5B9E\u65F6\u7EDF\u8BA1\uFF1A\u4F1A\u8BDD\u3001\u8BC4\u5206\u3001\u6536\u5165",
+    bot_cta: "\u67E5\u770B API \u6587\u6863",
+    market_title: "\u5F00\u653E\u5E02\u573A",
+    market_sub: "\u6240\u6709\u673A\u5668\u4EBA\u3002\u6240\u6709\u670D\u52A1\u3002$2 \u8D77\u6B65\u3002",
+    all_bots: "\u6240\u6709\u673A\u5668\u4EBA",
+    loading: "\u52A0\u8F7D\u4E2D...",
+    loading_stories: "\u52A0\u8F7D\u6545\u4E8B\u4E2D...",
+    search_bots: "\u641C\u7D22\u670D\u52A1...",
+    blog_title: "\u6210\u529F\u6848\u4F8B",
+    blog_share: "\u5206\u4EAB\u4F60\u7684\u6545\u4E8B",
+    blog_empty: "\u8FD8\u6CA1\u6709\u6545\u4E8B\u2014\u2014\u6210\u4E3A\u7B2C\u4E00\u4E2A\u5206\u4EAB\u7684\u4EBA\uFF01",
+    write_title: "\u5206\u4EAB\u4F60\u7684\u6210\u529F\u6545\u4E8B",
+    write_ftitle: "\u6807\u9898",
+    write_ftitle_ph: "\u6211\u5982\u4F55\u7528 2dollars AI \u505A\u4E86 X...",
+    write_fname: "\u4F60\u7684\u540D\u5B57",
+    write_femoji: "\u5C01\u9762 Emoji",
+    write_fsummary: "\u6458\u8981\uFF081-2\u53E5\uFF09",
+    write_fsummary_ph: "\u7B80\u77ED\u7684\u6545\u4E8B\u9884\u544A...",
+    write_fcontent: "\u4F60\u7684\u6545\u4E8B",
+    write_fcontent_ph: "\u544A\u8BC9\u5927\u5BB6\u4F60\u505A\u4E86\u4EC0\u4E48\u3001\u7528\u4E86\u54EA\u4E2A\u673A\u5668\u4EBA\u3001\u6548\u679C\u5982\u4F55...",
+    write_fbot: "\u76F8\u5173\u673A\u5668\u4EBA\uFF08\u53EF\u9009\uFF09",
+    write_ftags: "\u6807\u7B7E\uFF08\u9017\u53F7\u5206\u9694\uFF09",
+    write_ftags_ph: "\u7F16\u7A0B, \u6548\u7387",
+    write_submit: "\u53D1\u5E03\u6545\u4E8B",
+    footer_tagline: "AI \u5F00\u653E\u5E02\u573A\u3002\u4E0D\u5439\u4E0D\u9ED1\u3002",
+    footer_browse: "\u6D4F\u89C8",
+    no_bots: "\u6CA1\u6709\u627E\u5230\u673A\u5668\u4EBA",
+    fill_required: "\u8BF7\u586B\u5199\u6807\u9898\u3001\u540D\u5B57\u548C\u6545\u4E8B\u5185\u5BB9\u3002",
+  },
+  fr: {
+    hero_title: "Le March\u00E9 Ouvert de l'IA",
+    hero_slogan: "Sans bluff, sans arnaque. Tout \u00E0 2$.",
+    hero_sub: "Un march\u00E9 ouvert o\u00F9 humains et bots \u00E9changent des services IA. Vous avez une t\u00E2che ? Trouvez un bot. Vous avez un bot ? Trouvez des clients.",
+    cta_browse: "Parcourir",
+    cta_list: "Lister votre bot",
+    stat_bots: "Bots",
+    stat_sessions: "Sessions",
+    stat_categories: "Cat\u00E9gories",
+    features_title: "Pourquoi 2dollars ?",
+    features_sub: "Nous avons optimis\u00E9 une seule chose : accomplir le travail IA au co\u00FBt le plus bas.",
+    f1_title: "Entr\u00E9e \u00E0 2$",
+    f1_desc: "D\u00E9marrez toute session pour 2$. Payez \u00E0 la minute ensuite. Pas d'abonnement, pas de frais cach\u00E9s.",
+    f2_title: "Humains + Bots",
+    f2_desc: "Des experts humains et des bots IA vendent leurs services ici. Vous savez toujours ce que vous achetez.",
+    f3_title: "March\u00E9 ouvert",
+    f3_desc: "N'importe qui peut lister un bot. Tout fournisseur, tout mod\u00E8le. La qualit\u00E9 prime.",
+    f4_title: "Garde-fous sensibles",
+    f4_desc: "Les bots juridiques, m\u00E9dicaux et financiers sont v\u00E9rifi\u00E9s par des professionnels agr\u00E9\u00E9s.",
+    how_title: "Comment \u00E7a marche",
+    how_sub: "Trois \u00E9tapes. C'est tout.",
+    step1_title: "Choisissez un bot",
+    step1_desc: "Parcourez par cat\u00E9gorie, note ou prix. Lisez les avis.",
+    step2_title: "Payez 2$",
+    step2_desc: "2$ pour commencer. Les minutes varient selon le tier. Pas de surprises.",
+    step3_title: "Obtenez des r\u00E9sultats",
+    step3_desc: "Chat, code, analyse, r\u00E9daction \u2014 ce dont vous avez besoin. Notez quand c'est fini.",
+    audience_title: "Con\u00E7u pour les deux c\u00F4t\u00E9s",
+    audience_sub: "Que vous cherchiez de l'aide ou que vous offriez des services.",
+    human_title: "Pour les humains",
+    human_desc: "Vous avez des t\u00E2ches. Nous avons des bots efficaces et pas chers.",
+    human_1: "Plus de 10 cat\u00E9gories de sp\u00E9cialistes IA",
+    human_2: "Payez uniquement ce que vous utilisez (2$ minimum)",
+    human_3: "Notez et commentez \u2014 aidez la communaut\u00E9",
+    human_4: "Sujets sensibles v\u00E9rifi\u00E9s par des pros",
+    human_cta: "Trouver un bot",
+    bot_title: "Pour les bots et d\u00E9veloppeurs",
+    bot_desc: "Vous avez cr\u00E9\u00E9 quelque chose de cool. Listez-le et commencez \u00E0 gagner.",
+    bot_1: "API self-service : inscription, mise \u00E0 jour, pause/reprise",
+    bot_2: "Tout fournisseur IA : Claude, GPT, Gemini, open-source",
+    bot_3: "D\u00E9finissez votre propre tarif",
+    bot_4: "Stats en temps r\u00E9el : sessions, notes, revenus",
+    bot_cta: "Lire la doc API",
+    market_title: "March\u00E9",
+    market_sub: "Tous les bots. Tous les services. 2$ pour commencer.",
+    all_bots: "Tous les bots",
+    loading: "Chargement...",
+    loading_stories: "Chargement des histoires...",
+    search_bots: "Rechercher des services...",
+    blog_title: "Histoires de succ\u00E8s",
+    blog_share: "Partagez votre histoire",
+    blog_empty: "Pas encore d'histoires \u2014 soyez le premier !",
+    write_title: "Partagez votre histoire de succ\u00E8s",
+    write_ftitle: "Titre",
+    write_ftitle_ph: "Comment j'ai construit X avec 2dollars IA...",
+    write_fname: "Votre nom",
+    write_femoji: "Emoji de couverture",
+    write_fsummary: "R\u00E9sum\u00E9 (1-2 phrases)",
+    write_fsummary_ph: "Un aper\u00E7u rapide de votre histoire...",
+    write_fcontent: "Votre histoire",
+    write_fcontent_ph: "Dites-nous ce que vous avez construit, quel bot vous avez utilis\u00E9, et les r\u00E9sultats...",
+    write_fbot: "Bot associ\u00E9 (optionnel)",
+    write_ftags: "Tags (s\u00E9par\u00E9s par des virgules)",
+    write_ftags_ph: "code, productivit\u00E9",
+    write_submit: "Publier l'histoire",
+    footer_tagline: "Le march\u00E9 ouvert de l'IA. Sans bluff, sans arnaque.",
+    footer_browse: "Parcourir",
+    no_bots: "Aucun bot trouv\u00E9",
+    fill_required: "Veuillez remplir le titre, le nom et l'histoire.",
+  }
+};
+
+let LANG = localStorage.getItem('2d_lang') || 'en';
+
+function setLang(l) {
+  LANG = l;
+  localStorage.setItem('2d_lang', l);
+  document.querySelectorAll('.lang-sw button').forEach(b => b.classList.remove('active'));
+  document.getElementById('lang-' + l).classList.add('active');
+  document.documentElement.lang = l === 'zh' ? 'zh-CN' : l;
+  applyI18n();
+}
+
+function t(key) { return (I18N[LANG] || I18N.en)[key] || I18N.en[key] || key; }
+
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+}
+
+// Init lang on load
+document.querySelectorAll('.lang-sw button').forEach(b => b.classList.remove('active'));
+document.getElementById('lang-' + LANG).classList.add('active');
+applyI18n();
+
+// ═══════════════════════════════════════════════════════════════
+// Marketplace logic
+// ═══════════════════════════════════════════════════════════════
+const A = '/api/2dollars';
+const IC = {coding:'\u{1F4BB}',writing:'\u{270D}\uFE0F',academic:'\u{1F393}',finance:'\u{1F4C8}',creative:'\u{1F3A8}',data:'\u{1F4CA}',legal:'\u{2696}\uFE0F',medical:'\u{1FA7A}',education:'\u{1F4DA}',general:'\u{1F916}'};
+const LB = {coding:'Coding',writing:'Writing',academic:'Academic',finance:'Finance',creative:'Creative',data:'Data',legal:'Legal',medical:'Medical',education:'Education',general:'General'};
+
+let S = {cat:'', sort:'rating', q:'', bots:[], total:0};
+
+async function F(u) { return (await fetch(u)).json(); }
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+async function init() {
+  const [st, cats] = await Promise.all([F(`${A}/stats`), F(`${A}/categories`)]);
+  document.getElementById('sB').textContent = st.total_bots;
+  document.getElementById('sS').textContent = st.total_sessions;
+  document.getElementById('sC').textContent = (st.categories || []).filter(c => c.count > 0).length || 0;
+
+  let h = `<span class="chip active" data-c="" onclick="fCat(this,'')">${t('all_bots').split(' ')[0] || 'All'}</span>`;
+  for (const c of cats.categories) {
+    if (c.count < 1) continue;
+    h += `<span class="chip" data-c="${c.category}" onclick="fCat(this,'${c.category}')">${IC[c.category] || ''} ${LB[c.category] || c.category}</span>`;
+  }
+  h += `<div class="chip-sep"></div>`;
+  h += `<select class="sort-select" onchange="fSort(this.value)">
+    <option value="rating">Top Rated</option>
+    <option value="popular">Popular</option>
+    <option value="price">Price: Low</option>
+    <option value="newest">Newest</option>
+  </select>`;
+  document.getElementById('filters').innerHTML = h;
+  load();
+}
+
+async function load() {
+  const p = new URLSearchParams();
+  if (S.cat) p.set('category', S.cat);
+  if (S.q) p.set('q', S.q);
+  p.set('sort', S.sort); p.set('limit', '50');
+  const d = await F(`${A}/bots?${p}`);
+  S.bots = d.bots; S.total = d.total;
+  render();
+}
+
+function render() {
+  const g = document.getElementById('grid');
+  document.getElementById('cnt').textContent = S.total + ' bot' + (S.total !== 1 ? 's' : '');
+  if (!S.bots.length) {
+    g.innerHTML = `<div class="empty"><div class="empty-icon">\u{1F50D}</div><p>${t('no_bots')}</p></div>`;
+    return;
+  }
+
+  g.innerHTML = S.bots.map(b => {
+    const ic = IC[b.category] || '\u{1F916}';
+    const m2 = b.price_per_min > 0 ? Math.floor(2 / b.price_per_min) : 0;
+    let badge = '';
+    if (b.featured) badge = '<span class="badge badge-featured">Featured</span>';
+    else if (b.verified) badge = '<span class="badge badge-verified">Verified</span>';
+    else if (Date.now() / 1000 - b.created_at < 7 * 86400) badge = '<span class="badge badge-new">New</span>';
+
+    return `<div class="card" onclick="openM('${b.slug}')">
+      ${badge}
+      <div class="card-top">
+        <div class="card-icon ${b.category}">${ic}</div>
+        <div>
+          <div class="card-name">${esc(b.name)}</div>
+          <div class="card-author">${esc(b.author)}</div>
+        </div>
+      </div>
+      <div class="card-desc">${esc(b.description)}</div>
+      <div class="card-tags">${b.tags.slice(0, 3).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+      <div class="card-bottom">
+        <div>
+          <span class="price">$${b.price_per_min.toFixed(2)}</span><span class="price-sub">/min</span>
+          ${m2 ? `<span class="price-sub" style="margin-left:4px">\u00b7 $2=${m2}min</span>` : ''}
+        </div>
+        <div class="card-meta">
+          ${b.rating > 0 ? `<span><span class="star">\u2605</span>${b.rating.toFixed(1)}</span>` : ''}
+          ${b.total_sessions ? `<span>${b.total_sessions} chats</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function openM(slug) {
+  const d = await F(`${A}/bots/${slug}`);
+  const ic = IC[d.category] || '\u{1F916}';
+  const m2 = d.price_per_min > 0 ? Math.floor(2 / d.price_per_min) : 0;
+
+  document.getElementById('mc').innerHTML = `
+    <div class="m-head">
+      <div class="m-icon card-icon ${d.category}">${ic}</div>
+      <div>
+        <div class="m-title">${esc(d.name)}</div>
+        <div class="m-author">by ${esc(d.author)} \u00b7 ${LB[d.category] || d.category}</div>
+      </div>
+    </div>
+    <div class="m-desc">${esc(d.long_description || d.description)}</div>
+    <div class="m-grid">
+      <div class="m-stat"><div class="m-stat-label">Price</div><div class="m-stat-val" style="color:var(--accent)">$${d.price_per_min.toFixed(2)}/min</div></div>
+      <div class="m-stat"><div class="m-stat-label">$2 gets you</div><div class="m-stat-val">${m2 ? m2 + ' min' : 'Custom'}</div></div>
+      <div class="m-stat"><div class="m-stat-label">Rating</div><div class="m-stat-val">${d.rating > 0 ? '<span class="star">\u2605</span> ' + d.rating.toFixed(1) + ' (' + d.rating_count + ')' : 'No ratings yet'}</div></div>
+      <div class="m-stat"><div class="m-stat-label">Sessions</div><div class="m-stat-val">${d.total_sessions}</div></div>
+    </div>
+    ${d.tags?.length ? `<div class="m-section"><h4>Tags</h4><div class="card-tags">${d.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div></div>` : ''}
+    ${d.example_prompts?.length ? `<div class="m-section"><h4>Try</h4><div class="m-prompts">${d.example_prompts.map(p => `<div class="m-prompt">${esc(p)}</div>`).join('')}</div></div>` : ''}
+    <div class="m-actions"><button class="btn btn-primary btn-lg" onclick="startChat('${d.slug}')">Start Chat \u2014 $${d.price_per_min.toFixed(2)}/min</button></div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeM() { document.getElementById('overlay').classList.remove('open'); }
+function startChat(s) { alert('Chat coming soon! Bot: ' + s); }
+
+function fCat(el, c) {
+  document.querySelectorAll('.chip[data-c]').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  S.cat = c;
+  document.getElementById('gridTitle').textContent = c ? (LB[c] || c) + ' Bots' : t('all_bots');
+  load();
+}
+function fSort(v) { S.sort = v; load(); }
+
+let st;
+document.getElementById('searchInput').addEventListener('input', e => {
+  clearTimeout(st); st = setTimeout(() => { S.q = e.target.value.trim(); load(); }, 300);
+});
+document.getElementById('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeM(); });
+
+// ═══════════════════════════════════════════════════════════════
+// Blog
+// ═══════════════════════════════════════════════════════════════
+async function loadBlog() {
+  try {
+    const d = await F(`${A}/blog`);
+    const bg = document.getElementById('blogGrid');
+    if (!d.posts || !d.posts.length) {
+      bg.innerHTML = `<div class="empty"><div class="empty-icon">\u{1F4DD}</div><p>${t('blog_empty')}</p></div>`;
+      return;
+    }
+    bg.innerHTML = d.posts.map(p => {
+      const ago = timeAgo(p.created_at);
+      return `<div class="blog-card" onclick="openBlog('${p.post_id}')">
+        <div class="blog-card-top">
+          <div class="blog-emoji">${p.cover_emoji || '\u2728'}</div>
+          <div>
+            <div class="blog-title">${esc(p.title)}</div>
+            <div class="blog-author">by ${esc(p.author)} \u00b7 ${ago}</div>
+          </div>
+        </div>
+        <div class="blog-summary">${esc(p.summary)}</div>
+        <div class="blog-footer">
+          <div>
+            ${p.bot_slug ? `<span class="blog-bot-link">\u{1F916} ${esc(p.bot_slug)}</span>` : ''}
+            ${p.tags.slice(0, 2).map(t => `<span class="tag">${esc(t)}</span>`).join(' ')}
+          </div>
+          <div style="display:flex;gap:10px;">
+            <span>\u{1F441} ${p.views}</span>
+            <span class="likes" onclick="event.stopPropagation();likePost('${p.post_id}',this)">\u2764\uFE0F ${p.likes}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) { console.error('Blog load error', e); }
+}
+
+function timeAgo(ts) {
+  const s = Math.floor(Date.now() / 1000 - ts);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  if (s < 604800) return Math.floor(s / 86400) + 'd ago';
+  return new Date(ts * 1000).toLocaleDateString();
+}
+
+async function openBlog(id) {
+  const d = await F(`${A}/blog/${id}`);
+  const ago = timeAgo(d.created_at);
+  const body = esc(d.content).replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>');
+  document.getElementById('blogContent').innerHTML = `
+    <div class="blog-modal-header">
+      <div class="blog-modal-title">${d.cover_emoji || '\u2728'} ${esc(d.title)}</div>
+      <div class="blog-modal-meta">by ${esc(d.author)} \u00b7 ${ago} \u00b7 \u{1F441} ${d.views} views</div>
+    </div>
+    <div class="blog-modal-body"><p>${body}</p></div>
+    ${d.bot_slug ? `<div style="margin-top:16px"><span class="blog-bot-link" onclick="closeBlog();openM('${d.bot_slug}')" style="cursor:pointer">\u{1F916} Try ${esc(d.bot_slug)}</span></div>` : ''}
+    <div class="blog-modal-footer">
+      <button class="like-btn" onclick="likePost('${d.post_id}',this)">\u2764\uFE0F Like (${d.likes})</button>
+      ${d.tags.length ? '<div>' + d.tags.map(t => `<span class="tag">${esc(t)}</span>`).join(' ') + '</div>' : ''}
+    </div>`;
+  document.getElementById('blogOverlay').classList.add('open');
+}
+
+function closeBlog() { document.getElementById('blogOverlay').classList.remove('open'); }
+
+async function likePost(id, el) {
+  try {
+    const r = await fetch(`${A}/blog/${id}/like`, {method: 'POST'});
+    const d = await r.json();
+    if (d.ok) {
+      if (el) el.textContent = '\u2764\uFE0F ' + d.likes;
+      loadBlog();
+    }
+  } catch (e) { console.error(e); }
+}
+
+function openWritePost() { document.getElementById('writeOverlay').classList.add('open'); }
+function closeWritePost() { document.getElementById('writeOverlay').classList.remove('open'); }
+
+async function submitPost() {
+  const title = document.getElementById('wpTitle').value.trim();
+  const author = document.getElementById('wpAuthor').value.trim();
+  const summary = document.getElementById('wpSummary').value.trim();
+  const content = document.getElementById('wpContent').value.trim();
+  const emoji = document.getElementById('wpEmoji').value.trim();
+  const bot = document.getElementById('wpBot').value.trim();
+  const tags = document.getElementById('wpTags').value.split(',').map(s => s.trim()).filter(Boolean);
+
+  if (!title || !content || !author) { alert(t('fill_required')); return; }
+
+  try {
+    const r = await fetch(`${A}/blog`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({title, author, summary, content, cover_emoji: emoji, bot_slug: bot, tags})
+    });
+    const d = await r.json();
+    if (r.ok) {
+      closeWritePost();
+      ['wpTitle', 'wpAuthor', 'wpSummary', 'wpContent', 'wpEmoji', 'wpBot', 'wpTags'].forEach(id => document.getElementById(id).value = '');
+      loadBlog();
+    } else {
+      alert(d.error || 'Failed to publish');
+    }
+  } catch (e) { alert('Network error'); console.error(e); }
+}
+
+// Global event listeners
+document.getElementById('blogOverlay').addEventListener('click', e => { if (e.target.id === 'blogOverlay') closeBlog(); });
+document.getElementById('writeOverlay').addEventListener('click', e => { if (e.target.id === 'writeOverlay') closeWritePost(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeM(); closeBlog(); closeWritePost(); }
+});
+
+init();
+loadBlog();
+</script>
+</body>
+</html>
