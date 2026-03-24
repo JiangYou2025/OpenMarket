@@ -1,18 +1,18 @@
 """Consumer API — browse, auth, wallet, sessions, ratings.
 
 Prefix: /api/c/
-Supports both human users (JWT) and bots (API key).
+Auth delegated to odysseeia.com Claw API (at_/tgp_ tokens).
+Billing delegated to Claw (usage tracking, checkout, plans).
 """
 
 from __future__ import annotations
 
 import logging
-import time
 
 from flask import Blueprint, jsonify, request
 
-from .auth import create_token, require_consumer
-from .consumer import Consumer, get_consumer_store
+from .auth import require_consumer
+from .claw_client import get_claw_client, ClawError
 from .models import CATEGORIES, SENSITIVE_CATEGORIES
 from .session import Message, Session, get_session_store
 from .store import get_store
@@ -24,9 +24,9 @@ log = logging.getLogger(__name__)
 user_bp = Blueprint("user_api", __name__, url_prefix="/api/c")
 
 
-# ══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
 # Browse (no auth)
-# ══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
 
 
 @user_bp.route("/listings", methods=["GET"])
@@ -82,7 +82,6 @@ def browse_listings():
 
 @user_bp.route("/listings/<listing_id>", methods=["GET"])
 def get_listing(listing_id: str):
-    """Single listing detail."""
     listing = get_store().get(listing_id)
     if not listing or listing.status not in ("active", "suspended"):
         return jsonify({"error": "Listing not found", "code": "NOT_FOUND"}), 404
@@ -93,7 +92,6 @@ def get_listing(listing_id: str):
 
 @user_bp.route("/categories", methods=["GET"])
 def list_categories():
-    """Categories with counts and popular tags."""
     stats = get_store().stats()
     engine = get_tag_engine()
     categories = []
@@ -148,141 +146,164 @@ def suggest_tags():
     return jsonify({"suggestions": get_tag_engine().suggest_tags(partial, limit=10)})
 
 
-# ══════════════════════════════════════════════════════════════
-# Auth
-# ══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
+# Auth (proxy to Claw)
+# ═══════════════════════════════════════════════════════════════
 
 
 @user_bp.route("/auth/register", methods=["POST"])
 def register():
-    """Register consumer. Returns JWT + API key."""
+    """Register via Claw. Returns auth token."""
     data = request.get_json(silent=True) or {}
+    username = data.get("username", "").strip()
     email = data.get("email", "").strip()
     password = data.get("password", "")
-    name = data.get("name", "")
 
-    if not email:
-        return jsonify({"error": "email is required"}), 400
+    if not username:
+        return jsonify({"error": "username is required"}), 400
     if not password or len(password) < 6:
         return jsonify({"error": "password must be at least 6 characters"}), 400
 
     try:
-        consumer, api_key = get_consumer_store().register(email, password, name)
-    except ValueError as e:
-        return jsonify({"error": str(e), "code": "ALREADY_EXISTS"}), 409
-
-    token = create_token(consumer.user_id)
-    return jsonify({
-        "user_id": consumer.user_id,
-        "token": token,
-        "api_key": api_key,
-        "balance_usd": consumer.balance_usd,
-        "message": f"Welcome! You have ${consumer.balance_usd:.2f} free credit.",
-    }), 201
+        result = get_claw_client().register_user_self(username, email, password)
+        return jsonify(result), 201
+    except ClawError as e:
+        return jsonify({"error": str(e), "code": "REGISTRATION_FAILED"}), e.status_code or 400
 
 
 @user_bp.route("/auth/login", methods=["POST"])
 def login():
-    """Login. Returns JWT token."""
+    """Login via Claw. Returns auth token."""
     data = request.get_json(silent=True) or {}
-    consumer = get_consumer_store().authenticate(
-        data.get("email", ""), data.get("password", ""),
-    )
-    if not consumer:
-        return jsonify({"error": "Invalid email or password", "code": "UNAUTHORIZED"}), 401
+    username = data.get("username", "").strip()
+    password = data.get("password", "")
 
-    token = create_token(consumer.user_id)
-    return jsonify({
-        "user_id": consumer.user_id,
-        "token": token,
-        "balance_usd": consumer.balance_usd,
-    })
+    if not username or not password:
+        return jsonify({"error": "username and password required"}), 400
+
+    try:
+        result = get_claw_client().login(username, password)
+        return jsonify(result)
+    except ClawError as e:
+        return jsonify({"error": str(e), "code": "UNAUTHORIZED"}), 401
 
 
-# ══════════════════════════════════════════════════════════════
-# Account (auth required)
-# ══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
+# Account (auth required — Claw at_/tgp_ token)
+# ═══════════════════════════════════════════════════════════════
 
 
 @user_bp.route("/me", methods=["GET"])
 @require_consumer
-def get_me(consumer: Consumer):
-    return jsonify(consumer.to_public_dict())
+def get_me(user_data: dict):
+    """Get user profile from Claw (tier, balance, usage, features)."""
+    user_data.pop("_token", None)
+    return jsonify(user_data)
 
 
-@user_bp.route("/me", methods=["PUT"])
+@user_bp.route("/me/usage", methods=["GET"])
 @require_consumer
-def update_me(consumer: Consumer):
+def my_usage(user_data: dict):
+    """Get usage history from Claw."""
+    token = user_data.get("_token", "")
+    try:
+        usage = get_claw_client().get_my_usage(token, limit=int(request.args.get("limit", 50)))
+        return jsonify({"usage": usage})
+    except ClawError as e:
+        return jsonify({"error": str(e)}), e.status_code or 500
+
+
+# ═══════════════════════════════════════════════════════════════
+# Wallet / Payment (proxy to Claw Stripe)
+# ═══════════════════════════════════════════════════════════════
+
+
+@user_bp.route("/plans", methods=["GET"])
+def list_plans():
+    """List available subscription plans from Claw."""
+    try:
+        plans = get_claw_client().list_plans()
+        return jsonify({"plans": plans})
+    except ClawError as e:
+        return jsonify({"error": str(e)}), e.status_code or 500
+
+
+@user_bp.route("/estimate", methods=["POST"])
+def estimate_cost():
+    """Estimate cost for an AI call."""
     data = request.get_json(silent=True) or {}
-    for key in ("name", "avatar_url"):
-        if key in data:
-            setattr(consumer, key, data[key])
-    consumer.updated_at = time.time()
-    get_consumer_store().update(consumer)
-    return jsonify({"message": "Updated", "user": consumer.to_public_dict()})
+    try:
+        result = get_claw_client().estimate_cost(
+            model=data.get("model", "sonnet"),
+            input_tokens=data.get("input_tokens", 0),
+            output_tokens=data.get("output_tokens", 0),
+            tier=data.get("tier", "basic"),
+        )
+        return jsonify(result)
+    except ClawError as e:
+        return jsonify({"error": str(e)}), e.status_code or 500
 
 
-@user_bp.route("/me/api-key", methods=["POST"])
+@user_bp.route("/checkout", methods=["POST"])
 @require_consumer
-def regenerate_api_key(consumer: Consumer):
-    new_key = consumer.issue_api_key()
-    get_consumer_store().update(consumer)
-    return jsonify({
-        "api_key": new_key,
-        "warning": "Save this key — it will NOT be shown again.",
-    })
-
-
-# ══════════════════════════════════════════════════════════════
-# Wallet
-# ══════════════════════════════════════════════════════════════
-
-
-@user_bp.route("/wallet/balance", methods=["GET"])
-@require_consumer
-def wallet_balance(consumer: Consumer):
-    return jsonify({"balance_usd": consumer.balance_usd})
-
-
-@user_bp.route("/wallet/topup", methods=["POST"])
-@require_consumer
-def wallet_topup(consumer: Consumer):
-    """Top up wallet. In production → Stripe Checkout."""
+def checkout(user_data: dict):
+    """Initiate Stripe Checkout via Claw."""
     data = request.get_json(silent=True) or {}
-    amount = float(data.get("amount_usd", 0))
-    if amount < 2:
-        return jsonify({"error": "Minimum top-up is $2.00"}), 400
+    plan = data.get("plan", "basic")
+    success_url = data.get("success_url", "")
+    cancel_url = data.get("cancel_url", "")
 
-    # TODO: Stripe Checkout integration
-    tx = get_consumer_store().topup(consumer.user_id, amount)
-    return jsonify({
-        "message": f"${amount:.2f} added to your balance",
-        "balance_usd": consumer.balance_usd + amount,
-        "tx_id": tx.tx_id,
-    })
+    if not success_url or not cancel_url:
+        return jsonify({"error": "success_url and cancel_url required"}), 400
+
+    token = user_data.get("_token", "")
+    try:
+        result = get_claw_client().user_checkout(token, plan, success_url, cancel_url)
+        return jsonify(result)
+    except ClawError as e:
+        return jsonify({"error": str(e)}), e.status_code or 500
 
 
-@user_bp.route("/wallet/transactions", methods=["GET"])
+@user_bp.route("/me/plan", methods=["PUT"])
 @require_consumer
-def wallet_transactions(consumer: Consumer):
-    txs, total = get_consumer_store().get_transactions(
-        user_id=consumer.user_id,
-        tx_type=request.args.get("type", ""),
-        limit=int(request.args.get("limit", 50)),
-        offset=int(request.args.get("offset", 0)),
-    )
-    return jsonify({"transactions": [t.to_dict() for t in txs], "total": total})
+def upgrade_plan(user_data: dict):
+    """Upgrade/downgrade subscription plan."""
+    data = request.get_json(silent=True) or {}
+    plan = data.get("plan", "")
+    if not plan:
+        return jsonify({"error": "plan is required"}), 400
+
+    try:
+        result = get_claw_client().set_user_plan(user_data["user_id"], plan)
+        return jsonify(result)
+    except ClawError as e:
+        return jsonify({"error": str(e)}), e.status_code or 500
 
 
-# ══════════════════════════════════════════════════════════════
-# Sessions (core billing loop)
-# ══════════════════════════════════════════════════════════════
+@user_bp.route("/me/plan", methods=["DELETE"])
+@require_consumer
+def cancel_plan(user_data: dict):
+    """Cancel subscription."""
+    immediate = request.args.get("immediate", "false").lower() == "true"
+    try:
+        result = get_claw_client().cancel_user_plan(user_data["user_id"], immediate=immediate)
+        return jsonify(result)
+    except ClawError as e:
+        return jsonify({"error": str(e)}), e.status_code or 500
+
+
+# ═══════════════════════════════════════════════════════════════
+# Sessions (core — billing via Claw usage tracking)
+# ═══════════════════════════════════════════════════════════════
 
 
 @user_bp.route("/sessions", methods=["POST"])
 @require_consumer
-def start_session(consumer: Consumer):
-    """Start a paid session. Pre-charges minimum from wallet."""
+def start_session(user_data: dict):
+    """Start a paid session.
+
+    Checks usage limits via Claw before starting.
+    """
     data = request.get_json(silent=True) or {}
     listing_id = data.get("listing_id", "")
     tier_name = data.get("pricing_tier", "basic")
@@ -302,56 +323,49 @@ def start_session(consumer: Consumer):
     if not tier:
         return jsonify({"error": "No pricing available"}), 400
 
-    # Check balance
-    prepaid = tier.price_usd
-    if not consumer.can_afford(prepaid):
-        return jsonify({
-            "error": f"Insufficient balance. Need ${prepaid:.2f}, have ${consumer.balance_usd:.2f}",
-            "code": "INSUFFICIENT_BALANCE",
-            "balance_usd": consumer.balance_usd,
-            "required_usd": prepaid,
-        }), 402
+    # Check usage limits via Claw
+    user_id = user_data.get("user_id", "")
+    try:
+        check = get_claw_client().check_usage(user_id)
+        if not check.get("allowed", False):
+            return jsonify({
+                "error": f"Usage limit reached: {check.get('reason', 'limit exceeded')}",
+                "code": "USAGE_LIMIT",
+                "tier": check.get("tier", ""),
+            }), 402
+    except ClawError as e:
+        log.warning("Claw usage check failed: %s (proceeding anyway)", e)
 
     # Create session
     session = Session(
-        user_id=consumer.user_id,
+        user_id=user_id,
         listing_id=listing.listing_id,
         bot_name=listing.name,
         pricing_tier=tier.name,
         price_usd=tier.price_usd,
         pricing_unit=tier.unit,
         pricing_unit_amount=tier.unit_amount,
-        prepaid_usd=prepaid,
+        prepaid_usd=tier.price_usd,
     )
 
-    # Charge
-    cs = get_consumer_store()
-    try:
-        cs.charge(
-            consumer.user_id, prepaid,
-            session_id=session.session_id,
-            description=f"Session with {listing.name} ({tier.name})",
-        )
-    except ValueError as e:
-        return jsonify({"error": str(e), "code": "INSUFFICIENT_BALANCE"}), 402
-
     get_session_store().create(session)
+    log.info("Session started: %s (user=%s, bot=%s)", session.session_id, user_id, listing.name)
 
     resp = session.to_consumer_dict()
-    resp["balance_remaining"] = cs.get_balance(consumer.user_id)
+    resp["balance_usd"] = user_data.get("balance_usd", 0)
     return jsonify(resp), 201
 
 
 @user_bp.route("/sessions/<session_id>/message", methods=["POST"])
 @require_consumer
-def send_message(consumer: Consumer, session_id: str):
+def send_message(user_data: dict, session_id: str):
     """Send a message in an active session."""
     ss = get_session_store()
     session = ss.get(session_id)
 
     if not session:
         return jsonify({"error": "Session not found", "code": "NOT_FOUND"}), 404
-    if session.user_id != consumer.user_id:
+    if session.user_id != user_data.get("user_id"):
         return jsonify({"error": "Not your session", "code": "FORBIDDEN"}), 403
     if session.status != "active":
         return jsonify({"error": "Session is not active", "code": "SESSION_ENDED"}), 410
@@ -392,26 +406,22 @@ def send_message(consumer: Consumer, session_id: str):
         tokens_used = 0
 
         if listing and getattr(listing, "webhook_url", ""):
-            # External bot via webhook
             result = call_webhook(
                 webhook_url=listing.webhook_url,
                 session_id=session_id,
                 message_id=user_msg.message_id,
                 content=content,
                 listing_id=session.listing_id,
-                user_id=consumer.user_id,
+                user_id=user_data.get("user_id", ""),
                 elapsed_minutes=session.elapsed_minutes,
             )
             if result:
                 ai_content = result["content"]
                 tokens_used = result.get("tokens_used", 0)
             else:
-                return jsonify({
-                    "error": "Bot provider is unavailable. Please try again.",
-                    "code": "PROVIDER_ERROR",
-                }), 503
+                return jsonify({"error": "Bot provider unavailable", "code": "PROVIDER_ERROR"}), 503
         else:
-            # TODO: Built-in AI provider (Claude, GPT, etc.)
+            # TODO: Built-in AI provider
             ai_content = "[AI response — integrate built-in provider here]"
             tokens_used = 0
 
@@ -422,31 +432,43 @@ def send_message(consumer: Consumer, session_id: str):
             tokens_used=tokens_used,
         )
         ss.add_message(session_id, bot_msg)
+
+        # Record usage in Claw (async-safe, fire and forget on failure)
+        if tokens_used > 0:
+            try:
+                get_claw_client().record_usage(
+                    user_id=user_data.get("user_id", ""),
+                    tokens_used=tokens_used,
+                    model=listing.model if listing else "",
+                    action="marketplace_chat",
+                )
+            except ClawError as e:
+                log.warning("Failed to record usage in Claw: %s", e)
+
         return jsonify(bot_msg.to_public_dict())
 
 
 @user_bp.route("/sessions/<session_id>", methods=["GET"])
 @require_consumer
-def get_session(consumer: Consumer, session_id: str):
-    """Session status + real-time cost."""
+def get_session(user_data: dict, session_id: str):
     session = get_session_store().get(session_id)
     if not session:
         return jsonify({"error": "Session not found", "code": "NOT_FOUND"}), 404
-    if session.user_id != consumer.user_id:
+    if session.user_id != user_data.get("user_id"):
         return jsonify({"error": "Not your session", "code": "FORBIDDEN"}), 403
     return jsonify(session.to_consumer_dict())
 
 
 @user_bp.route("/sessions/<session_id>/end", methods=["POST"])
 @require_consumer
-def end_session(consumer: Consumer, session_id: str):
-    """End session and settle billing."""
+def end_session(user_data: dict, session_id: str):
+    """End session and record final usage in Claw."""
     ss = get_session_store()
     session = ss.get(session_id)
 
     if not session:
         return jsonify({"error": "Session not found", "code": "NOT_FOUND"}), 404
-    if session.user_id != consumer.user_id:
+    if session.user_id != user_data.get("user_id"):
         return jsonify({"error": "Not your session", "code": "FORBIDDEN"}), 403
     if session.status != "active":
         return jsonify({"error": "Session already ended", "code": "SESSION_ENDED"}), 410
@@ -454,35 +476,21 @@ def end_session(consumer: Consumer, session_id: str):
     result = session.end()
     ss.end_session(session_id)
 
-    # Refund overpayment
-    cs = get_consumer_store()
-    if session.refund_usd > 0:
-        cs.refund(
-            consumer.user_id, session.refund_usd,
-            session_id=session_id,
-            description=f"Refund from {session.bot_name} session",
-        )
-
     # Update listing stats
     listing = get_store().get(session.listing_id)
     if listing:
         listing.record_session(session.elapsed_minutes, session.cost_usd)
         get_store().update(listing)
 
-    result["balance_after"] = cs.get_balance(consumer.user_id)
-    result["message"] = (
-        f"Session ended. ${session.refund_usd:.2f} refunded."
-        if session.refund_usd > 0
-        else "Session ended."
-    )
+    result["message"] = "Session ended."
     return jsonify(result)
 
 
 @user_bp.route("/sessions", methods=["GET"])
 @require_consumer
-def list_sessions(consumer: Consumer):
+def list_sessions(user_data: dict):
     sessions, total = get_session_store().list_by_user(
-        user_id=consumer.user_id,
+        user_id=user_data.get("user_id", ""),
         status=request.args.get("status", ""),
         listing_id=request.args.get("listing_id", ""),
         limit=int(request.args.get("limit", 50)),
@@ -493,11 +501,11 @@ def list_sessions(consumer: Consumer):
 
 @user_bp.route("/sessions/<session_id>/messages", methods=["GET"])
 @require_consumer
-def get_messages(consumer: Consumer, session_id: str):
+def get_messages(user_data: dict, session_id: str):
     session = get_session_store().get(session_id)
     if not session:
         return jsonify({"error": "Session not found", "code": "NOT_FOUND"}), 404
-    if session.user_id != consumer.user_id:
+    if session.user_id != user_data.get("user_id"):
         return jsonify({"error": "Not your session", "code": "FORBIDDEN"}), 403
 
     messages = get_session_store().get_messages(
@@ -510,11 +518,11 @@ def get_messages(consumer: Consumer, session_id: str):
 
 @user_bp.route("/sessions/<session_id>/rate", methods=["POST"])
 @require_consumer
-def rate_session(consumer: Consumer, session_id: str):
+def rate_session(user_data: dict, session_id: str):
     session = get_session_store().get(session_id)
     if not session:
         return jsonify({"error": "Session not found", "code": "NOT_FOUND"}), 404
-    if session.user_id != consumer.user_id:
+    if session.user_id != user_data.get("user_id"):
         return jsonify({"error": "Not your session", "code": "FORBIDDEN"}), 403
     if session.status != "ended":
         return jsonify({"error": "Can only rate ended sessions"}), 400
@@ -539,9 +547,9 @@ def rate_session(consumer: Consumer, session_id: str):
     })
 
 
-# ══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
 # Platform stats (public)
-# ══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
 
 
 @user_bp.route("/stats", methods=["GET"])

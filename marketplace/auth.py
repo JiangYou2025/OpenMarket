@@ -1,17 +1,23 @@
-"""Auth helpers — JWT tokens and API key verification.
+"""Auth — delegates user authentication to odysseeia.com Claw API.
 
-Supports dual auth: JWT (browser) and API key (programmatic).
-Both consumers and bots can call consumer endpoints.
+Token types:
+  - at_xxx  — user auth token (login session)
+  - tgp_xxx — user API token (programmatic)
+  - sk_xxx  — server token (our server calling Claw)
+  - 2d_sk_  — provider API key (bot self-service, local to OpenMarket)
+  - 2d_ak_  — admin key (local to OpenMarket)
+
+Consumer auth flow:
+  1. User passes `at_` or `tgp_` token in Authorization header
+  2. OpenMarket calls Claw `GET /api/v1/me` with that token
+  3. If valid, Claw returns user profile (user_id, tier, balance, etc.)
+  4. OpenMarket injects that profile into the endpoint handler
 """
 
 from __future__ import annotations
 
-import hashlib
-import hmac
-import json
 import logging
 import time
-from base64 import urlsafe_b64decode, urlsafe_b64encode
 from functools import wraps
 from typing import Optional
 
@@ -19,114 +25,101 @@ from flask import jsonify, request
 
 log = logging.getLogger(__name__)
 
-# Secret for JWT signing (should come from env in production)
-JWT_SECRET = "2dollars-jwt-secret-change-in-production"
-JWT_EXPIRY = 86400 * 7  # 7 days
+# Cache validated tokens briefly to avoid hammering Claw on every request
+_token_cache: dict[str, tuple[dict, float]] = {}  # token -> (user_data, expires_at)
+TOKEN_CACHE_TTL = 60  # seconds
 
 
-# ── Simple JWT (no external deps) ────────────────────────────
-
-def _b64e(data: bytes) -> str:
-    return urlsafe_b64encode(data).rstrip(b"=").decode()
-
-
-def _b64d(s: str) -> bytes:
-    s += "=" * (4 - len(s) % 4)
-    return urlsafe_b64decode(s)
+def _get_bearer_token() -> str:
+    """Extract Bearer token from Authorization header."""
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Bearer "):
+        return auth[7:].strip()
+    return ""
 
 
-def create_token(user_id: str, extra: dict | None = None) -> str:
-    """Create a JWT-like token. Minimal implementation, no external deps."""
-    header = _b64e(json.dumps({"alg": "HS256", "typ": "JWT"}).encode())
-    payload_data = {
-        "sub": user_id,
-        "iat": int(time.time()),
-        "exp": int(time.time()) + JWT_EXPIRY,
-    }
-    if extra:
-        payload_data.update(extra)
-    payload = _b64e(json.dumps(payload_data).encode())
-    sig = _b64e(hmac.new(JWT_SECRET.encode(), f"{header}.{payload}".encode(), hashlib.sha256).digest())
-    return f"{header}.{payload}.{sig}"
+def _identify_token(token: str) -> str:
+    """Identify token type by prefix."""
+    if token.startswith("at_"):
+        return "claw_auth"
+    if token.startswith("tgp_"):
+        return "claw_user"
+    if token.startswith("sk_"):
+        return "claw_server"
+    if token.startswith("2d_sk_"):
+        return "provider_key"
+    if token.startswith("2d_ak_"):
+        return "admin_key"
+    return "unknown"
 
 
-def verify_token(token: str) -> Optional[dict]:
-    """Verify and decode a token. Returns payload or None."""
+def validate_consumer_token(token: str) -> Optional[dict]:
+    """Validate at_ or tgp_ token via Claw API.
+
+    Returns user profile dict or None.
+    Caches results for TOKEN_CACHE_TTL seconds.
+    """
+    # Check cache
+    now = time.time()
+    cached = _token_cache.get(token)
+    if cached and cached[1] > now:
+        return cached[0]
+
+    # Call Claw
+    from .claw_client import get_claw_client, ClawError
     try:
-        parts = token.split(".")
-        if len(parts) != 3:
-            return None
-        header, payload, sig = parts
-        expected_sig = _b64e(hmac.new(JWT_SECRET.encode(), f"{header}.{payload}".encode(), hashlib.sha256).digest())
-        if not hmac.compare_digest(sig, expected_sig):
-            return None
-        data = json.loads(_b64d(payload))
-        if data.get("exp", 0) < time.time():
-            return None
-        return data
-    except Exception:
+        user_data = get_claw_client().get_me(token)
+        _token_cache[token] = (user_data, now + TOKEN_CACHE_TTL)
+        return user_data
+    except ClawError as e:
+        log.debug("Claw auth failed: %s", e)
+        _token_cache.pop(token, None)
         return None
 
 
-# ── Request auth extraction ──────────────────────────────────
-
-def get_auth_from_request() -> tuple[str, str]:
-    """Extract auth type and credential from request.
-
-    Returns: (auth_type, credential)
-        auth_type: "jwt" | "consumer_key" | "provider_key" | "admin_key" | "none"
-        credential: the token or key string
-    """
-    auth = request.headers.get("Authorization", "")
-    if not auth.startswith("Bearer "):
-        return "none", ""
-
-    token = auth[7:].strip()
-
-    # API keys by prefix
-    if token.startswith("2d_ck_"):
-        return "consumer_key", token
-    if token.startswith("2d_sk_"):
-        return "provider_key", token
-    if token.startswith("2d_ak_"):
-        return "admin_key", token
-
-    # Otherwise assume JWT
-    return "jwt", token
+def clear_token_cache(token: str = ""):
+    """Clear cached token validation. Empty string = clear all."""
+    if token:
+        _token_cache.pop(token, None)
+    else:
+        _token_cache.clear()
 
 
 # ── Decorators ───────────────────────────────────────────────
 
-def require_consumer(f):
-    """Require consumer auth (JWT or consumer API key).
 
-    Injects `consumer` as first argument.
+def require_consumer(f):
+    """Require consumer auth (Claw at_/tgp_ token).
+
+    Injects `user_data` dict as first argument. Contains:
+      user_id, tier, balance_usd, tokens_remaining_day, features, etc.
     """
     @wraps(f)
     def wrapper(*args, **kwargs):
-        from .consumer import get_consumer_store
+        token = _get_bearer_token()
+        if not token:
+            return jsonify({"error": "Authorization header required", "code": "UNAUTHORIZED"}), 401
 
-        auth_type, credential = get_auth_from_request()
-        consumer = None
+        token_type = _identify_token(token)
 
-        if auth_type == "jwt":
-            payload = verify_token(credential)
-            if payload:
-                consumer = get_consumer_store().get(payload["sub"])
-        elif auth_type == "consumer_key":
-            consumer = get_consumer_store().get_by_api_key(credential)
+        if token_type in ("claw_auth", "claw_user"):
+            user_data = validate_consumer_token(token)
+            if not user_data:
+                return jsonify({"error": "Invalid or expired token", "code": "UNAUTHORIZED"}), 401
+            # Inject the raw token so downstream can proxy calls
+            user_data["_token"] = token
+            return f(user_data, *args, **kwargs)
+        else:
+            return jsonify({
+                "error": "Consumer token required (at_xxx or tgp_xxx)",
+                "code": "UNAUTHORIZED",
+            }), 401
 
-        if not consumer:
-            return jsonify({"error": "Authentication required", "code": "UNAUTHORIZED"}), 401
-        if consumer.status != "active":
-            return jsonify({"error": "Account suspended", "code": "FORBIDDEN"}), 403
-
-        return f(consumer, *args, **kwargs)
     return wrapper
 
 
 def require_provider(f):
-    """Require provider auth (provider API key).
+    """Require provider auth (2d_sk_ API key).
 
     Injects `listing` as first argument.
     """
@@ -134,11 +127,11 @@ def require_provider(f):
     def wrapper(*args, **kwargs):
         from .store import get_store
 
-        auth_type, credential = get_auth_from_request()
-        if auth_type != "provider_key":
-            return jsonify({"error": "Provider API key required", "code": "UNAUTHORIZED"}), 401
+        token = _get_bearer_token()
+        if not token or not token.startswith("2d_sk_"):
+            return jsonify({"error": "Provider API key required (2d_sk_xxx)", "code": "UNAUTHORIZED"}), 401
 
-        listing = get_store().get_by_api_key(credential)
+        listing = get_store().get_by_api_key(token)
         if not listing:
             return jsonify({"error": "Invalid API key", "code": "UNAUTHORIZED"}), 401
 
