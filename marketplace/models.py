@@ -70,6 +70,7 @@ class Listing:
     provider: str = "claude"               # AI provider name (from registry)
     model: str = ""                        # Specific model (empty = provider default)
     system_prompt: str = ""                # Custom system prompt for this listing
+    webhook_url: str = ""                  # External bot endpoint (if set, bypasses built-in AI)
 
     # Pricing
     pricing: list[PricingTier] = field(default_factory=lambda: [

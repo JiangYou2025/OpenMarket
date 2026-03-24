@@ -17,6 +17,7 @@ from .models import CATEGORIES, SENSITIVE_CATEGORIES
 from .session import Message, Session, get_session_store
 from .store import get_store
 from .tag_engine import get_tag_engine
+from .webhook import call_webhook
 
 log = logging.getLogger(__name__)
 
@@ -386,12 +387,39 @@ def send_message(consumer: Consumer, session_id: str):
             "code": "REVIEW_PENDING",
         }), 202
     else:
-        # TODO: Call AI provider / webhook here
+        # Route to webhook or built-in provider
+        ai_content = ""
+        tokens_used = 0
+
+        if listing and getattr(listing, "webhook_url", ""):
+            # External bot via webhook
+            result = call_webhook(
+                webhook_url=listing.webhook_url,
+                session_id=session_id,
+                message_id=user_msg.message_id,
+                content=content,
+                listing_id=session.listing_id,
+                user_id=consumer.user_id,
+                elapsed_minutes=session.elapsed_minutes,
+            )
+            if result:
+                ai_content = result["content"]
+                tokens_used = result.get("tokens_used", 0)
+            else:
+                return jsonify({
+                    "error": "Bot provider is unavailable. Please try again.",
+                    "code": "PROVIDER_ERROR",
+                }), 503
+        else:
+            # TODO: Built-in AI provider (Claude, GPT, etc.)
+            ai_content = "[AI response — integrate built-in provider here]"
+            tokens_used = 0
+
         bot_msg = Message(
             session_id=session_id,
             role="assistant",
-            content="[AI response — integrate provider here]",
-            tokens_used=0,
+            content=ai_content,
+            tokens_used=tokens_used,
         )
         ss.add_message(session_id, bot_msg)
         return jsonify(bot_msg.to_public_dict())
