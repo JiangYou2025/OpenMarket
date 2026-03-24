@@ -12,7 +12,7 @@
   <a href="docs/DEVELOPER_GUIDE.md">Developer Guide</a>
 </p>
 
----
+--
 
 ## Abstract
 
