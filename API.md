@@ -17,7 +17,7 @@
 ### Consumer 用例
 
 **UC-1: 小白找编程帮手**
-> 小明是大学生，Python 作业不会做。他在社交媒体看到 2dollars 的帖子，点进去，搜「Python」，看到一个评分 4.8 的编程机器人，$2/15分钟。他注册账号，充了 $2，点「开始聊天」，把代码贴进去，机器人帮他 debug 了。15 分钟后会话结束，他给了 5 星。
+> 小明是大学生，Python 作业不会做。他在社交媒体看到 OpenMarket 的帖子，点进去，搜「Python」，看到一个评分 4.8 的编程机器人，$2/15分钟。他注册账号，充了 $2，点「开始聊天」，把代码贴进去，机器人帮他 debug 了。15 分钟后会话结束，他给了 5 星。
 
 **UC-2: 创业者批量调研**
 > 老王要做市场调研，需要分析 50 个竞品。他注册账号充了 $50，同时开了 3 个不同的 AI 机器人会话——一个做数据分析，一个写报告，一个翻译英文资料。每个会话独立计费，他可以随时暂停/继续。
@@ -46,11 +46,11 @@
 | 调用方 | 认证方式 | Header |
 |--------|---------|--------|
 | Consumer（浏览器/人类） | JWT token（注册/登录后获得） | `Authorization: Bearer eyJhb...` |
-| Consumer（机器人/程序） | API key（注册后生成） | `Authorization: Bearer 2d_ck_xxx` |
-| Provider（服务商） | API key（注册时一次性返回） | `Authorization: Bearer 2d_sk_xxx` |
-| Admin | API key + IP 白名单 | `Authorization: Bearer 2d_ak_xxx` |
+| Consumer（机器人/程序） | API key（注册后生成） | `Authorization: Bearer om_ck_xxx` |
+| Provider（服务商） | API key（注册时一次性返回） | `Authorization: Bearer om_sk_xxx` |
+| Admin | API key + IP 白名单 | `Authorization: Bearer om_ak_xxx` |
 
-> `2d_ck_` = consumer key, `2d_sk_` = service/provider key, `2d_ak_` = admin key
+> `om_ck_` = consumer key, `om_sk_` = service/provider key, `om_ak_` = admin key
 
 ---
 
@@ -173,7 +173,7 @@ POST /api/c/auth/register
 {
   "user_id": "u_a1b2c3",
   "token": "eyJhb...",
-  "api_key": "2d_ck_xxx",
+  "api_key": "om_ck_xxx",
   "balance_usd": 2.0,
   "message": "Welcome! You have $2.00 free credit."
 }
@@ -225,7 +225,7 @@ POST /api/c/me/api-key
 响应：
 ```json
 {
-  "api_key": "2d_ck_xxx",
+  "api_key": "om_ck_xxx",
   "warning": "Save this key — it will NOT be shown again."
 }
 ```
@@ -511,7 +511,7 @@ POST /api/p/register
 ```json
 {
   "listing_id": "a3f8b2c1d0",
-  "api_key": "2d_sk_xxx",
+  "api_key": "om_sk_xxx",
   "status": "draft",
   "warning": "Save this API key — it will NOT be shown again.",
   "next_steps": [
@@ -630,7 +630,7 @@ POST /api/p/me/rotate-key
 响应：
 ```json
 {
-  "api_key": "2d_sk_newxxx",
+  "api_key": "om_sk_newxxx",
   "warning": "Save this key — old key is now invalid."
 }
 ```

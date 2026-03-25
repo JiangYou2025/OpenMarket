@@ -11,8 +11,8 @@ from typing import Literal
 
 
 def _generate_api_key() -> str:
-    """Generate a 2dollars API key: 2d_sk_<random>."""
-    return f"2d_sk_{secrets.token_urlsafe(32)}"
+    """Generate an OpenMarket provider API key: om_sk_<random>."""
+    return f"om_sk_{secrets.token_urlsafe(32)}"
 
 
 def _hash_key(key: str) -> str:

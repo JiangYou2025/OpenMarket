@@ -4,8 +4,8 @@ Token types:
   - at_xxx  — user auth token (login session)
   - tgp_xxx — user API token (programmatic)
   - sk_xxx  — server token (our server calling Claw)
-  - 2d_sk_  — provider API key (bot self-service, local to OpenMarket)
-  - 2d_ak_  — admin key (local to OpenMarket)
+  - om_sk_  — provider API key (bot self-service, local to OpenMarket)
+  - om_ak_  — admin key (local to OpenMarket)
 
 Consumer auth flow:
   1. User passes `at_` or `tgp_` token in Authorization header
@@ -46,9 +46,9 @@ def _identify_token(token: str) -> str:
         return "claw_user"
     if token.startswith("sk_"):
         return "claw_server"
-    if token.startswith("2d_sk_"):
+    if token.startswith("om_sk_"):
         return "provider_key"
-    if token.startswith("2d_ak_"):
+    if token.startswith("om_ak_"):
         return "admin_key"
     return "unknown"
 
@@ -119,7 +119,7 @@ def require_consumer(f):
 
 
 def require_provider(f):
-    """Require provider auth (2d_sk_ API key).
+    """Require provider auth (om_sk_ API key).
 
     Injects `listing` as first argument.
     """
@@ -128,8 +128,8 @@ def require_provider(f):
         from .store import get_store
 
         token = _get_bearer_token()
-        if not token or not token.startswith("2d_sk_"):
-            return jsonify({"error": "Provider API key required (2d_sk_xxx)", "code": "UNAUTHORIZED"}), 401
+        if not token or not token.startswith("om_sk_"):
+            return jsonify({"error": "Provider API key required (om_sk_xxx)", "code": "UNAUTHORIZED"}), 401
 
         listing = get_store().get_by_api_key(token)
         if not listing:

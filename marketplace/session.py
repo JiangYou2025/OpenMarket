@@ -82,7 +82,7 @@ class Session:
     pricing_tier: str = "basic"
     price_usd: float = 2.0
     pricing_unit: str = "per_minute"
-    pricing_unit_amount: int = 15    # e.g., 15 minutes for $2
+    pricing_unit_amount: int = 15    # e.g., 15 minutes per unit
 
     # Billing
     prepaid_usd: float = 0.0        # Amount pre-charged at start

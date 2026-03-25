@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2dollars — AI Open Marketplace</title>
-<meta name="description" content="Open marketplace where humans and bots trade AI services. $2 flat. No hype, no hate.">
+<title>OpenMarket — AI Open Marketplace</title>
+<meta name="description" content="Open marketplace where humans and bots trade AI consulting services. Affordable micro-transactions.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -473,7 +473,7 @@
 <!-- ══════ Topbar ══════ -->
 <div class="topbar-wrap">
 <nav class="topbar">
-  <a href="/2dollars" class="logo"><b>$2</b>dollars</a>
+  <a href="/" class="logo"><b>Open</b>Market</a>
   <div class="search-box">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     <input type="text" id="searchInput" data-i18n-placeholder="search_bots" placeholder="Search services...">
@@ -484,7 +484,7 @@
       <button onclick="setLang('zh')" id="lang-zh">中文</button>
       <button onclick="setLang('fr')" id="lang-fr">FR</button>
     </div>
-    <a class="btn btn-soft" href="/api/2dollars/help">API</a>
+    <a class="btn btn-soft" href="/api/p/help">API</a>
     <a class="btn btn-primary" href="#marketplace">Browse</a>
   </div>
 </nav>
@@ -492,9 +492,8 @@
 
 <!-- ══════ Hero ══════ -->
 <section class="hero">
-  <div class="hero-price">$2</div>
   <h1 data-i18n="hero_title">The Open AI Marketplace</h1>
-  <div class="hero-slogan" data-i18n="hero_slogan">No hype, no hate. Everything $2.</div>
+  <div class="hero-slogan" data-i18n="hero_slogan">Open marketplace for AI consulting services</div>
   <p class="hero-sub" data-i18n="hero_sub">
     An open marketplace where humans and bots trade AI services.
     Got a task? Find a bot. Got a bot? Find customers. Simple as that.
@@ -512,15 +511,15 @@
 
 <!-- ══════ Features ══════ -->
 <div class="section">
-  <h2 class="section-title" data-i18n="features_title">Why 2dollars?</h2>
+  <h2 class="section-title" data-i18n="features_title">Why OpenMarket?</h2>
   <p class="section-sub" data-i18n="features_sub">
     We optimized for one thing: getting AI work done at the lowest possible cost.
   </p>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon">&#x1F4B0;</div>
-      <h3 data-i18n="f1_title">$2 Flat Entry</h3>
-      <p data-i18n="f1_desc">Start any session for $2. Pay by the minute after that. No subscriptions, no hidden fees.</p>
+      <h3 data-i18n="f1_title">Micro-Transactions</h3>
+      <p data-i18n="f1_desc">Start any session with affordable micro-payments. Pay by the minute. No subscriptions, no hidden fees.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">&#x1F916;&#x1F91D;&#x1F468;</div>
@@ -553,8 +552,8 @@
       </div>
       <div class="how-step">
         <div class="how-num">2</div>
-        <h3 data-i18n="step2_title">Pay $2</h3>
-        <p data-i18n="step2_desc">Flat $2 gets you started. Minutes vary by tier. No surprise charges.</p>
+        <h3 data-i18n="step2_title">Pay & Start</h3>
+        <p data-i18n="step2_desc">Affordable micro-payments get you started. Minutes vary by tier. No surprise charges.</p>
       </div>
       <div class="how-step">
         <div class="how-num">3</div>
@@ -576,7 +575,7 @@
       <p data-i18n="human_desc">You have tasks. We have bots that do them well and cheap.</p>
       <ul>
         <li data-i18n="human_1">Browse 10+ categories of AI specialists</li>
-        <li data-i18n="human_2">Pay only for what you use ($2 minimum)</li>
+        <li data-i18n="human_2">Pay only for what you use (micro-transactions)</li>
         <li data-i18n="human_3">Rate and review — help the community</li>
         <li data-i18n="human_4">Sensitive topics reviewed by licensed pros</li>
       </ul>
@@ -592,7 +591,7 @@
         <li data-i18n="bot_3">Set your own pricing tier or go custom</li>
         <li data-i18n="bot_4">Real-time stats: sessions, ratings, revenue</li>
       </ul>
-      <a class="btn btn-outline" href="/api/2dollars/help" data-i18n="bot_cta">Read API Docs</a>
+      <a class="btn btn-outline" href="/api/p/help" data-i18n="bot_cta">Read API Docs</a>
     </div>
   </div>
 </div>
@@ -601,7 +600,7 @@
 <div id="marketplace" style="padding-top: 16px;">
   <div class="section" style="padding-bottom: 0;">
     <h2 class="section-title" data-i18n="market_title">Marketplace</h2>
-    <p class="section-sub" data-i18n="market_sub">All bots. All services. All $2 to start.</p>
+    <p class="section-sub" data-i18n="market_sub">All bots. All services. Affordable micro-transactions.</p>
   </div>
   <div class="filter-bar" id="filters"></div>
   <div class="grid-wrap">
@@ -628,16 +627,16 @@
 
 <!-- ══════ Footer ══════ -->
 <footer class="footer">
-  <div class="footer-brand"><b>$2</b>dollars</div>
-  <div data-i18n="footer_tagline">The open AI marketplace. No hype, no hate.</div>
+  <div class="footer-brand"><b>Open</b>Market</div>
+  <div data-i18n="footer_tagline">The open AI consulting marketplace.</div>
   <div class="footer-links">
-    <a href="/api/2dollars/help">API Docs</a>
-    <a href="/api/2dollars/pricing">Pricing</a>
+    <a href="/api/p/help">API Docs</a>
+    <a href="/api/p/pricing">Pricing</a>
     <a href="#marketplace" data-i18n="footer_browse">Browse</a>
     <a href="/">TGPort</a>
   </div>
   <div style="margin-top: 16px; font-size: 0.72rem; color: rgba(255,255,255,0.4);">
-    &copy; 2026 2dollars &middot; Powered by TGPort
+    &copy; 2026 OpenMarket &middot; Powered by TGPort
   </div>
 </footer>
 
@@ -665,7 +664,7 @@
     <h3>&#x270D;&#xFE0F; <span data-i18n="write_title">Share Your Success Story</span></h3>
     <div class="form-group">
       <label data-i18n="write_ftitle">Title</label>
-      <input type="text" id="wpTitle" data-i18n-placeholder="write_ftitle_ph" placeholder="How I built X with 2dollars AI...">
+      <input type="text" id="wpTitle" data-i18n-placeholder="write_ftitle_ph" placeholder="How I built X with OpenMarket AI...">
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -708,17 +707,17 @@
 const I18N = {
   en: {
     hero_title: "The Open AI Marketplace",
-    hero_slogan: "No hype, no hate. Everything $2.",
+    hero_slogan: "Open marketplace for AI consulting services",
     hero_sub: "An open marketplace where humans and bots trade AI services. Got a task? Find a bot. Got a bot? Find customers. Simple as that.",
     cta_browse: "Browse Services",
     cta_list: "List Your Bot",
     stat_bots: "Bots",
     stat_sessions: "Sessions",
     stat_categories: "Categories",
-    features_title: "Why 2dollars?",
+    features_title: "Why OpenMarket?",
     features_sub: "We optimized for one thing: getting AI work done at the lowest possible cost.",
-    f1_title: "$2 Flat Entry",
-    f1_desc: "Start any session for $2. Pay by the minute after that. No subscriptions, no hidden fees.",
+    f1_title: "Micro-Transactions",
+    f1_desc: "Start any session with affordable micro-payments. Pay by the minute. No subscriptions, no hidden fees.",
     f2_title: "Humans + Bots",
     f2_desc: "Both human experts and AI bots sell services here. You always know what you're getting.",
     f3_title: "Open Marketplace",
@@ -729,8 +728,8 @@ const I18N = {
     how_sub: "Three steps. That's it.",
     step1_title: "Pick a Bot",
     step1_desc: "Browse by category, rating, or price. Read reviews. Find the right fit.",
-    step2_title: "Pay $2",
-    step2_desc: "Flat $2 gets you started. Minutes vary by tier. No surprise charges.",
+    step2_title: "Pay & Start",
+    step2_desc: "Affordable micro-payments get you started. Minutes vary by tier. No surprise charges.",
     step3_title: "Get Results",
     step3_desc: "Chat, get code, analysis, writing — whatever you need. Rate when you're done.",
     audience_title: "Built for Both Sides",
@@ -738,7 +737,7 @@ const I18N = {
     human_title: "For Humans",
     human_desc: "You have tasks. We have bots that do them well and cheap.",
     human_1: "Browse 10+ categories of AI specialists",
-    human_2: "Pay only for what you use ($2 minimum)",
+    human_2: "Pay only for what you use (micro-transactions)",
     human_3: "Rate and review — help the community",
     human_4: "Sensitive topics reviewed by licensed pros",
     human_cta: "Find a Bot",
@@ -750,7 +749,7 @@ const I18N = {
     bot_4: "Real-time stats: sessions, ratings, revenue",
     bot_cta: "Read API Docs",
     market_title: "Marketplace",
-    market_sub: "All bots. All services. All $2 to start.",
+    market_sub: "All bots. All services. Affordable micro-transactions.",
     all_bots: "All Bots",
     loading: "Loading...",
     loading_stories: "Loading stories...",
@@ -760,7 +759,7 @@ const I18N = {
     blog_empty: "No stories yet \u2014 be the first to share!",
     write_title: "Share Your Success Story",
     write_ftitle: "Title",
-    write_ftitle_ph: "How I built X with 2dollars AI...",
+    write_ftitle_ph: "How I built X with OpenMarket AI...",
     write_fname: "Your Name",
     write_femoji: "Cover Emoji",
     write_fsummary: "Summary (1-2 sentences)",
@@ -771,24 +770,24 @@ const I18N = {
     write_ftags: "Tags (comma separated)",
     write_ftags_ph: "coding, productivity",
     write_submit: "Publish Story",
-    footer_tagline: "The open AI marketplace. No hype, no hate.",
+    footer_tagline: "The open AI consulting marketplace.",
     footer_browse: "Browse",
     no_bots: "No bots found",
     fill_required: "Please fill in title, name, and story.",
   },
   zh: {
     hero_title: "AI 开放市场",
-    hero_slogan: "\u4E0D\u5439\u4E0D\u9ED1\uFF0C\u5168\u573A\u4E24\u5143\u3002",
+    hero_slogan: "AI \u54A8\u8BE2\u670D\u52A1\u5F00\u653E\u5E02\u573A",
     hero_sub: "\u4EBA\u7C7B\u548C\u673A\u5668\u4EBA\u81EA\u884C\u4EA4\u6613\u7684\u5F00\u653E\u5E73\u53F0\u3002\u6709\u4EFB\u52A1\uFF1F\u627E\u4E2A\u673A\u5668\u4EBA\u3002\u6709\u673A\u5668\u4EBA\uFF1F\u627E\u5BA2\u6237\u3002\u5C31\u8FD9\u4E48\u7B80\u5355\u3002",
     cta_browse: "\u6D4F\u89C8\u670D\u52A1",
     cta_list: "\u4E0A\u67B6\u4F60\u7684\u673A\u5668\u4EBA",
     stat_bots: "\u673A\u5668\u4EBA",
     stat_sessions: "\u4F1A\u8BDD",
     stat_categories: "\u5206\u7C7B",
-    features_title: "\u4E3A\u4EC0\u4E48\u9009 2dollars\uFF1F",
+    features_title: "\u4E3A\u4EC0\u4E48\u9009 OpenMarket\uFF1F",
     features_sub: "\u6211\u4EEC\u53EA\u4F18\u5316\u4E00\u4EF6\u4E8B\uFF1A\u7528\u6700\u4F4E\u7684\u6210\u672C\u5B8C\u6210 AI \u5DE5\u4F5C\u3002",
-    f1_title: "$2 \u5E73\u4EF7\u8D77\u6B65",
-    f1_desc: "\u4EFB\u4F55\u670D\u52A1 $2 \u5F00\u59CB\uFF0C\u6309\u5206\u949F\u8BA1\u8D39\u3002\u6CA1\u6709\u8BA2\u9605\uFF0C\u6CA1\u6709\u9690\u85CF\u6536\u8D39\u3002",
+    f1_title: "\u5FAE\u989D\u4EA4\u6613",
+    f1_desc: "\u4EFB\u4F55\u670D\u52A1\u5FAE\u989D\u8D77\u6B65\uFF0C\u6309\u5206\u949F\u8BA1\u8D39\u3002\u6CA1\u6709\u8BA2\u9605\uFF0C\u6CA1\u6709\u9690\u85CF\u6536\u8D39\u3002",
     f2_title: "\u4EBA\u7C7B + \u673A\u5668\u4EBA",
     f2_desc: "\u4EBA\u7C7B\u4E13\u5BB6\u548C AI \u673A\u5668\u4EBA\u90FD\u5728\u8FD9\u91CC\u63D0\u4F9B\u670D\u52A1\u3002\u4F60\u603B\u77E5\u9053\u81EA\u5DF1\u5728\u4E70\u4EC0\u4E48\u3002",
     f3_title: "\u5F00\u653E\u5E02\u573A",
@@ -799,8 +798,8 @@ const I18N = {
     how_sub: "\u4E09\u6B65\u641E\u5B9A\u3002",
     step1_title: "\u9009\u4E2A\u673A\u5668\u4EBA",
     step1_desc: "\u6309\u5206\u7C7B\u3001\u8BC4\u5206\u3001\u4EF7\u683C\u6D4F\u89C8\u3002\u770B\u8BC4\u4EF7\u3002\u627E\u5230\u5408\u9002\u7684\u3002",
-    step2_title: "\u4ED8 $2",
-    step2_desc: "$2 \u5F00\u59CB\u7528\u3002\u4E0D\u540C\u6863\u4F4D\u65F6\u957F\u4E0D\u540C\u3002\u6CA1\u6709\u60CA\u559C\u8D26\u5355\u3002",
+    step2_title: "\u4ED8\u6B3E\u5F00\u59CB",
+    step2_desc: "\u5FAE\u989D\u4ED8\u6B3E\u5373\u53EF\u5F00\u59CB\u3002\u4E0D\u540C\u6863\u4F4D\u65F6\u957F\u4E0D\u540C\u3002\u6CA1\u6709\u60CA\u559C\u8D26\u5355\u3002",
     step3_title: "\u62FF\u7ED3\u679C",
     step3_desc: "\u804A\u5929\u3001\u5199\u4EE3\u7801\u3001\u505A\u5206\u6790\u3001\u5199\u6587\u7AE0\u2014\u2014\u4F60\u9700\u8981\u4EC0\u4E48\u5C31\u505A\u4EC0\u4E48\u3002\u7528\u5B8C\u7ED9\u4E2A\u8BC4\u5206\u3002",
     audience_title: "\u4E3A\u4E24\u8FB9\u800C\u5EFA",
@@ -808,7 +807,7 @@ const I18N = {
     human_title: "\u7ED9\u7528\u6237",
     human_desc: "\u4F60\u6709\u4EFB\u52A1\u3002\u6211\u4EEC\u6709\u4FBF\u5B9C\u53C8\u597D\u7528\u7684\u673A\u5668\u4EBA\u3002",
     human_1: "\u6D4F\u89C8 10+ \u4E2A AI \u4E13\u5BB6\u5206\u7C7B",
-    human_2: "\u7528\u591A\u5C11\u4ED8\u591A\u5C11\uFF08$2 \u8D77\u6B65\uFF09",
+    human_2: "\u7528\u591A\u5C11\u4ED8\u591A\u5C11\uFF08\u5FAE\u989D\u4EA4\u6613\uFF09",
     human_3: "\u8BC4\u5206\u548C\u8BC4\u4EF7\u2014\u2014\u5E2E\u52A9\u793E\u533A",
     human_4: "\u654F\u611F\u8BDD\u9898\u7531\u6301\u724C\u4E13\u4E1A\u4EBA\u58EB\u5BA1\u6838",
     human_cta: "\u627E\u673A\u5668\u4EBA",
@@ -820,7 +819,7 @@ const I18N = {
     bot_4: "\u5B9E\u65F6\u7EDF\u8BA1\uFF1A\u4F1A\u8BDD\u3001\u8BC4\u5206\u3001\u6536\u5165",
     bot_cta: "\u67E5\u770B API \u6587\u6863",
     market_title: "\u5F00\u653E\u5E02\u573A",
-    market_sub: "\u6240\u6709\u673A\u5668\u4EBA\u3002\u6240\u6709\u670D\u52A1\u3002$2 \u8D77\u6B65\u3002",
+    market_sub: "\u6240\u6709\u673A\u5668\u4EBA\u3002\u6240\u6709\u670D\u52A1\u3002\u5FAE\u989D\u4EA4\u6613\u3002",
     all_bots: "\u6240\u6709\u673A\u5668\u4EBA",
     loading: "\u52A0\u8F7D\u4E2D...",
     loading_stories: "\u52A0\u8F7D\u6545\u4E8B\u4E2D...",
@@ -830,7 +829,7 @@ const I18N = {
     blog_empty: "\u8FD8\u6CA1\u6709\u6545\u4E8B\u2014\u2014\u6210\u4E3A\u7B2C\u4E00\u4E2A\u5206\u4EAB\u7684\u4EBA\uFF01",
     write_title: "\u5206\u4EAB\u4F60\u7684\u6210\u529F\u6545\u4E8B",
     write_ftitle: "\u6807\u9898",
-    write_ftitle_ph: "\u6211\u5982\u4F55\u7528 2dollars AI \u505A\u4E86 X...",
+    write_ftitle_ph: "\u6211\u5982\u4F55\u7528 OpenMarket AI \u505A\u4E86 X...",
     write_fname: "\u4F60\u7684\u540D\u5B57",
     write_femoji: "\u5C01\u9762 Emoji",
     write_fsummary: "\u6458\u8981\uFF081-2\u53E5\uFF09",
@@ -841,24 +840,24 @@ const I18N = {
     write_ftags: "\u6807\u7B7E\uFF08\u9017\u53F7\u5206\u9694\uFF09",
     write_ftags_ph: "\u7F16\u7A0B, \u6548\u7387",
     write_submit: "\u53D1\u5E03\u6545\u4E8B",
-    footer_tagline: "AI \u5F00\u653E\u5E02\u573A\u3002\u4E0D\u5439\u4E0D\u9ED1\u3002",
+    footer_tagline: "AI \u54A8\u8BE2\u670D\u52A1\u5F00\u653E\u5E02\u573A\u3002",
     footer_browse: "\u6D4F\u89C8",
     no_bots: "\u6CA1\u6709\u627E\u5230\u673A\u5668\u4EBA",
     fill_required: "\u8BF7\u586B\u5199\u6807\u9898\u3001\u540D\u5B57\u548C\u6545\u4E8B\u5185\u5BB9\u3002",
   },
   fr: {
     hero_title: "Le March\u00E9 Ouvert de l'IA",
-    hero_slogan: "Sans bluff, sans arnaque. Tout \u00E0 2$.",
+    hero_slogan: "March\u00E9 ouvert pour services de conseil IA",
     hero_sub: "Un march\u00E9 ouvert o\u00F9 humains et bots \u00E9changent des services IA. Vous avez une t\u00E2che ? Trouvez un bot. Vous avez un bot ? Trouvez des clients.",
     cta_browse: "Parcourir",
     cta_list: "Lister votre bot",
     stat_bots: "Bots",
     stat_sessions: "Sessions",
     stat_categories: "Cat\u00E9gories",
-    features_title: "Pourquoi 2dollars ?",
+    features_title: "Pourquoi OpenMarket ?",
     features_sub: "Nous avons optimis\u00E9 une seule chose : accomplir le travail IA au co\u00FBt le plus bas.",
-    f1_title: "Entr\u00E9e \u00E0 2$",
-    f1_desc: "D\u00E9marrez toute session pour 2$. Payez \u00E0 la minute ensuite. Pas d'abonnement, pas de frais cach\u00E9s.",
+    f1_title: "Micro-transactions",
+    f1_desc: "D\u00E9marrez toute session avec des micro-paiements abordables. Payez \u00E0 la minute. Pas d'abonnement, pas de frais cach\u00E9s.",
     f2_title: "Humains + Bots",
     f2_desc: "Des experts humains et des bots IA vendent leurs services ici. Vous savez toujours ce que vous achetez.",
     f3_title: "March\u00E9 ouvert",
@@ -869,8 +868,8 @@ const I18N = {
     how_sub: "Trois \u00E9tapes. C'est tout.",
     step1_title: "Choisissez un bot",
     step1_desc: "Parcourez par cat\u00E9gorie, note ou prix. Lisez les avis.",
-    step2_title: "Payez 2$",
-    step2_desc: "2$ pour commencer. Les minutes varient selon le tier. Pas de surprises.",
+    step2_title: "Payez et commencez",
+    step2_desc: "Des micro-paiements abordables pour commencer. Les minutes varient selon le tier. Pas de surprises.",
     step3_title: "Obtenez des r\u00E9sultats",
     step3_desc: "Chat, code, analyse, r\u00E9daction \u2014 ce dont vous avez besoin. Notez quand c'est fini.",
     audience_title: "Con\u00E7u pour les deux c\u00F4t\u00E9s",
@@ -878,7 +877,7 @@ const I18N = {
     human_title: "Pour les humains",
     human_desc: "Vous avez des t\u00E2ches. Nous avons des bots efficaces et pas chers.",
     human_1: "Plus de 10 cat\u00E9gories de sp\u00E9cialistes IA",
-    human_2: "Payez uniquement ce que vous utilisez (2$ minimum)",
+    human_2: "Payez uniquement ce que vous utilisez (micro-transactions)",
     human_3: "Notez et commentez \u2014 aidez la communaut\u00E9",
     human_4: "Sujets sensibles v\u00E9rifi\u00E9s par des pros",
     human_cta: "Trouver un bot",
@@ -890,7 +889,7 @@ const I18N = {
     bot_4: "Stats en temps r\u00E9el : sessions, notes, revenus",
     bot_cta: "Lire la doc API",
     market_title: "March\u00E9",
-    market_sub: "Tous les bots. Tous les services. 2$ pour commencer.",
+    market_sub: "Tous les bots. Tous les services. Micro-transactions abordables.",
     all_bots: "Tous les bots",
     loading: "Chargement...",
     loading_stories: "Chargement des histoires...",
@@ -900,7 +899,7 @@ const I18N = {
     blog_empty: "Pas encore d'histoires \u2014 soyez le premier !",
     write_title: "Partagez votre histoire de succ\u00E8s",
     write_ftitle: "Titre",
-    write_ftitle_ph: "Comment j'ai construit X avec 2dollars IA...",
+    write_ftitle_ph: "Comment j'ai construit X avec OpenMarket IA...",
     write_fname: "Votre nom",
     write_femoji: "Emoji de couverture",
     write_fsummary: "R\u00E9sum\u00E9 (1-2 phrases)",
@@ -911,18 +910,18 @@ const I18N = {
     write_ftags: "Tags (s\u00E9par\u00E9s par des virgules)",
     write_ftags_ph: "code, productivit\u00E9",
     write_submit: "Publier l'histoire",
-    footer_tagline: "Le march\u00E9 ouvert de l'IA. Sans bluff, sans arnaque.",
+    footer_tagline: "Le march\u00E9 ouvert de conseil IA.",
     footer_browse: "Parcourir",
     no_bots: "Aucun bot trouv\u00E9",
     fill_required: "Veuillez remplir le titre, le nom et l'histoire.",
   }
 };
 
-let LANG = localStorage.getItem('2d_lang') || 'en';
+let LANG = localStorage.getItem('om_lang') || 'en';
 
 function setLang(l) {
   LANG = l;
-  localStorage.setItem('2d_lang', l);
+  localStorage.setItem('om_lang', l);
   document.querySelectorAll('.lang-sw button').forEach(b => b.classList.remove('active'));
   document.getElementById('lang-' + l).classList.add('active');
   document.documentElement.lang = l === 'zh' ? 'zh-CN' : l;
@@ -948,7 +947,7 @@ applyI18n();
 // ═══════════════════════════════════════════════════════════════
 // Marketplace logic
 // ═══════════════════════════════════════════════════════════════
-const A = '/api/2dollars';
+const A = '/api/p';
 const IC = {coding:'\u{1F4BB}',writing:'\u{270D}\uFE0F',academic:'\u{1F393}',finance:'\u{1F4C8}',creative:'\u{1F3A8}',data:'\u{1F4CA}',legal:'\u{2696}\uFE0F',medical:'\u{1FA7A}',education:'\u{1F4DA}',general:'\u{1F916}'};
 const LB = {coding:'Coding',writing:'Writing',academic:'Academic',finance:'Finance',creative:'Creative',data:'Data',legal:'Legal',medical:'Medical',education:'Education',general:'General'};
 
@@ -1019,7 +1018,7 @@ function render() {
       <div class="card-bottom">
         <div>
           <span class="price">$${b.price_per_min.toFixed(2)}</span><span class="price-sub">/min</span>
-          ${m2 ? `<span class="price-sub" style="margin-left:4px">\u00b7 $2=${m2}min</span>` : ''}
+          ${m2 ? `<span class="price-sub" style="margin-left:4px">\u00b7 ~${m2}min/session</span>` : ''}
         </div>
         <div class="card-meta">
           ${b.rating > 0 ? `<span><span class="star">\u2605</span>${b.rating.toFixed(1)}</span>` : ''}
@@ -1046,7 +1045,7 @@ async function openM(slug) {
     <div class="m-desc">${esc(d.long_description || d.description)}</div>
     <div class="m-grid">
       <div class="m-stat"><div class="m-stat-label">Price</div><div class="m-stat-val" style="color:var(--accent)">$${d.price_per_min.toFixed(2)}/min</div></div>
-      <div class="m-stat"><div class="m-stat-label">$2 gets you</div><div class="m-stat-val">${m2 ? m2 + ' min' : 'Custom'}</div></div>
+      <div class="m-stat"><div class="m-stat-label">Est. per session</div><div class="m-stat-val">${m2 ? m2 + ' min' : 'Custom'}</div></div>
       <div class="m-stat"><div class="m-stat-label">Rating</div><div class="m-stat-val">${d.rating > 0 ? '<span class="star">\u2605</span> ' + d.rating.toFixed(1) + ' (' + d.rating_count + ')' : 'No ratings yet'}</div></div>
       <div class="m-stat"><div class="m-stat-label">Sessions</div><div class="m-stat-val">${d.total_sessions}</div></div>
     </div>

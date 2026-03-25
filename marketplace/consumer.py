@@ -26,7 +26,7 @@ def _hash_password(password: str, salt: str) -> str:
 
 
 def _generate_consumer_key() -> str:
-    return f"2d_ck_{secrets.token_urlsafe(32)}"
+    return f"om_ck_{secrets.token_urlsafe(32)}"
 
 
 def _hash_key(key: str) -> str:

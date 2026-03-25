@@ -1,6 +1,6 @@
 """Admin API — platform management endpoints.
 
-All endpoints require admin API key: Authorization: Bearer 2d_ak_xxx
+All endpoints require admin API key: Authorization: Bearer om_ak_xxx
 
 Prefix: /api/admin
 """
@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 admin_bp = Blueprint("admin_api", __name__, url_prefix="/api/admin")
 
 # Admin keys — in production, load from env
-ADMIN_KEYS = {"2d_ak_default_change_me"}
+ADMIN_KEYS = {"om_ak_default_change_me"}
 
 
 def require_admin(f):
@@ -35,7 +35,7 @@ def require_admin(f):
         if not auth.startswith("Bearer "):
             return jsonify({"error": "Admin auth required", "code": "UNAUTHORIZED"}), 401
         key = auth[7:].strip()
-        if not key.startswith("2d_ak_") or key not in ADMIN_KEYS:
+        if not key.startswith("om_ak_") or key not in ADMIN_KEYS:
             return jsonify({"error": "Invalid admin key", "code": "FORBIDDEN"}), 403
         return f(*args, **kwargs)
     return wrapper

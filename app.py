@@ -41,7 +41,6 @@ log.info("Registered blueprints: bot_api (/api/p), user_api (/api/c), admin_api 
 
 @app.route("/")
 @app.route("/marketplace")
-@app.route("/2dollars")
 def marketplace_page():
     """Serve the marketplace landing page."""
     return send_from_directory(str(STATIC_DIR), "marketplace.html")

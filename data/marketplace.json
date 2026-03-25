@@ -1,12 +1,12 @@
 {
   "bots": [
     {
-      "bot_id": "2d_140cb3a6",
+      "bot_id": "om_140cb3a6",
       "slug": "visa-navigator",
       "name": "Visa Navigator",
       "description": "Immigration info organizer. Visa timelines, document checklists, process overviews — NOT legal advice.",
       "long_description": "AI-powered immigration information tool. Get organized overviews of visa processes, document checklists, and general timelines for US, Canada, EU, UK, Australia systems. This is an information organizer, NOT a licensed immigration attorney. Always consult a qualified immigration lawyer before making legal decisions. We do not provide legal advice, represent you in proceedings, or guarantee any outcomes.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "legal",
       "tags": [
@@ -39,12 +39,12 @@
       ]
     },
     {
-      "bot_id": "2d_0791f5a3",
+      "bot_id": "om_0791f5a3",
       "slug": "tax-advisor",
       "name": "Tax Info Assistant",
       "description": "Tax education & general info. Deduction categories, filing basics, crypto tax concepts — NOT tax advice.",
       "long_description": "AI-powered tax education tool. Learn about deduction categories, filing concepts, estimated tax basics, and crypto/investment tax principles. This is a general information tool, NOT a licensed CPA or tax advisor. Tax laws vary by jurisdiction and individual circumstances. Always consult a qualified tax professional before making financial decisions based on tax implications.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "finance",
       "tags": [
@@ -77,12 +77,12 @@
       ]
     },
     {
-      "bot_id": "2d_49bb8737",
+      "bot_id": "om_49bb8737",
       "slug": "career-coach",
       "name": "Career Coach",
       "description": "Resume review, interview prep, salary negotiation, career pivots. Your personal career strategist.",
       "long_description": "Professional career coaching at a fraction of the cost. Get expert feedback on your resume, practice behavioral and technical interviews, learn salary negotiation tactics, and plan career transitions.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "education",
       "tags": [
@@ -115,12 +115,12 @@
       ]
     },
     {
-      "bot_id": "2d_ab075ee3",
+      "bot_id": "om_ab075ee3",
       "slug": "health-guide",
       "name": "Health Info Hub",
       "description": "Health education & wellness info. Understand symptoms, medications, lab terms — NOT medical diagnosis.",
       "long_description": "AI-powered health education tool. Learn about common symptoms, medication categories, lab test terminology, and general wellness concepts. This is NOT a doctor, nurse, or licensed healthcare provider. Never use this tool to self-diagnose, self-treat, or delay seeking professional medical care. For any health concerns, consult a licensed healthcare provider. In emergencies, call your local emergency number immediately.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "medical",
       "tags": [
@@ -153,12 +153,12 @@
       ]
     },
     {
-      "bot_id": "2d_5a0684ec",
+      "bot_id": "om_5a0684ec",
       "slug": "legal-quick",
       "name": "Legal Info Guide",
       "description": "Legal concepts explained. Contract terms, tenant basics, employment law overview — NOT legal advice.",
       "long_description": "AI-powered legal education tool. Understand common contract terms, tenant rights concepts, employment law basics, and small claims procedures in general terms. This is NOT a licensed attorney and does not provide legal advice. Laws vary significantly by jurisdiction. Always consult a qualified lawyer before taking legal action or making decisions with legal consequences.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "legal",
       "tags": [
@@ -191,12 +191,12 @@
       ]
     },
     {
-      "bot_id": "2d_9a8c094b",
+      "bot_id": "om_9a8c094b",
       "slug": "startup-advisor",
       "name": "Startup Advisor",
       "description": "Business planning education. Business model frameworks, market research methods, pricing concepts — NOT investment advice.",
       "long_description": "AI-powered business education tool. Learn about business plan frameworks, market analysis methods, pricing strategies, and fundraising concepts. This is an educational tool, NOT a licensed financial advisor or investment professional. Do not make investment decisions based solely on this tool. Consult qualified professionals for financial, legal, and accounting matters.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "finance",
       "tags": [
@@ -228,12 +228,12 @@
       ]
     },
     {
-      "bot_id": "2d_c6901b17",
+      "bot_id": "om_c6901b17",
       "slug": "essay-pro",
       "name": "Essay Pro",
       "description": "Academic writing, college essays, SOP, personal statements. Polished writing that gets you in.",
       "long_description": "Expert writing assistance for high-stakes documents. College application essays, statements of purpose, scholarship applications, research paper outlines, and professional bios. Get structural feedback, tone refinement, and compelling storytelling.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "writing",
       "tags": [
@@ -265,12 +265,12 @@
       ]
     },
     {
-      "bot_id": "2d_159bd1cf",
+      "bot_id": "om_159bd1cf",
       "slug": "property-advisor",
       "name": "Property Advisor",
       "description": "Real estate education. Mortgage concepts, rent-vs-buy frameworks, market basics — NOT financial advice.",
       "long_description": "AI-powered real estate education tool. Learn about mortgage concepts, rent-vs-buy analysis frameworks, closing cost structures, and general property market knowledge. This is NOT a licensed real estate agent, mortgage broker, or financial advisor. Property markets and regulations vary by location. Always consult licensed professionals before making property or mortgage decisions.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "finance",
       "tags": [
@@ -302,12 +302,12 @@
       ]
     },
     {
-      "bot_id": "2d_87e31f33",
+      "bot_id": "om_87e31f33",
       "slug": "mindful-ai",
       "name": "Mindful AI",
       "description": "Wellness exercises & self-care tools. Breathing, journaling prompts, stress tips — NOT therapy or counseling.",
       "long_description": "AI-powered self-care toolkit. Practice guided breathing, journaling exercises, and general stress management techniques. This is a wellness tool, NOT a therapist, psychologist, or licensed mental health professional. It cannot diagnose mental health conditions or replace professional treatment. If you are in crisis, contact the 988 Suicide & Crisis Lifeline (call/text 988) or your local crisis service immediately.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "medical",
       "tags": [
@@ -340,12 +340,12 @@
       ]
     },
     {
-      "bot_id": "2d_15450cfa",
+      "bot_id": "om_15450cfa",
       "slug": "code-doctor",
       "name": "Code Doctor",
       "description": "Debug any language, explain errors, code review, architecture advice. Your senior dev on call.",
       "long_description": "",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "coding",
       "tags": [
@@ -377,12 +377,12 @@
       ]
     },
     {
-      "bot_id": "2d_4a6ea875",
+      "bot_id": "om_4a6ea875",
       "slug": "language-tutor",
       "name": "Language Tutor",
       "description": "Learn English, Chinese, Spanish, French, Japanese. Conversation practice with instant corrections.",
       "long_description": "Interactive language learning through real conversation. Practice speaking scenarios, get grammar corrections with explanations, build vocabulary in context, and prepare for language tests. Like having a patient native speaker available 24/7 for $0.04/min.",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "education",
       "tags": [
@@ -415,12 +415,12 @@
       ]
     },
     {
-      "bot_id": "2d_a55fc1dc",
+      "bot_id": "om_a55fc1dc",
       "slug": "parenting-guide",
       "name": "Parenting Guide",
       "description": "Child development, behavior strategies, school readiness, teen communication. Evidence-based advice.",
       "long_description": "",
-      "author": "2dollars",
+      "author": "OpenMarket",
       "avatar_url": "",
       "category": "education",
       "tags": [

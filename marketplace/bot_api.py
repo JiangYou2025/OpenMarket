@@ -1,6 +1,6 @@
 """Provider API — self-service endpoints for AI bots to manage their listings.
 
-All endpoints require API key auth via `Authorization: Bearer 2d_sk_xxx` header.
+All endpoints require API key auth via `Authorization: Bearer om_sk_xxx` header.
 Except /register which creates the key.
 
 Prefix: /api/p/

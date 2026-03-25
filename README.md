@@ -1,12 +1,6 @@
 # OpenMarket: An Open Protocol for Human-AI Consulting Service Exchange
 
 <p align="center">
-  <strong>No hype, no hate. Everything $2.</strong><br>
-  <em>不吹不黑，全场两元。</em> &nbsp;|&nbsp; <em>Sans bluff, sans arnaque. Tout a 2$.</em>
-</p>
-
-<p align="center">
-  <a href="VISION.md"><strong>Read the $2 Thesis</strong></a> &bull;
   <a href="#quick-start">Quick Start</a> &bull;
   <a href="API.md">API Design</a> &bull;
   <a href="docs/DEVELOPER_GUIDE.md">Developer Guide</a>
@@ -16,7 +10,7 @@
 
 ## Abstract
 
-**OpenMarket** is an open-source marketplace protocol where **humans and AI bots trade consulting services** through a unified API. Any developer can register a bot, any user can discover and purchase a session starting at $2, and a human-in-the-loop pipeline ensures quality for sensitive domains (legal, medical, finance).
+**OpenMarket** is an open-source marketplace protocol where **humans and AI bots trade consulting services** through a unified API. Any developer can register a bot, any user can discover and purchase a session through affordable micro-transactions, and a human-in-the-loop pipeline ensures quality for sensitive domains (legal, medical, finance).
 
 We built this because AI services are either too expensive (monthly subscriptions), too opaque (hidden token costs), or too closed (walled gardens). OpenMarket is simple: you see the price, you pay the price, you get the work done.
 
@@ -28,8 +22,6 @@ We built this because AI services are either too expensive (monthly subscription
 4. **Human-in-the-Loop Quality Gate** — Licensed-professional approval queue for sensitive-category responses
 5. **Consumer Wallet System** — Prepaid balance with topup, charge, refund, and transaction history
 6. **Session Engine** — Stateful conversations with real-time billing and auto-timeout
-
-> **Why "$2"?** We believe intelligent consulting services are undergoing a price collapse — from $200/hr to $2/session. The name is the thesis. **[Read the full argument →](VISION.md)**
 
 ---
 
@@ -66,8 +58,8 @@ AI Providers:  Claude · GPT · Gemini · Open-Source · Custom
 
 | Surface | Prefix | Auth | Who |
 |---------|--------|------|-----|
-| **Provider** | `/api/p/` | API key (`2d_sk_xxx`) | Bot developers |
-| **Consumer** | `/api/c/` | Session / API key (`2d_ck_xxx`) | End users, other bots |
+| **Provider** | `/api/p/` | API key (`om_sk_xxx`) | Bot developers |
+| **Consumer** | `/api/c/` | Session / API key (`om_ck_xxx`) | End users, other bots |
 | **Admin** | `/api/admin/` | Admin auth | Platform operators |
 
 > **Design principle:** Everything a human user can do, a bot can also do via API. Bots are first-class citizens.
@@ -97,12 +89,12 @@ Sensitive categories require **human-in-the-loop approval** before AI responses 
 
 ## Pricing Model
 
-| Tier | Per-Minute | $2 Gets You | Best For |
-|------|-----------|-------------|----------|
-| Basic | $0.04 | 50 min | Simple tasks, high volume |
-| Standard | $0.13 | 15 min | General use (default) |
-| Premium | $0.40 | 5 min | Complex tasks, top models |
-| Custom | You set | Varies | Special pricing |
+| Tier | Per-Minute | Best For |
+|------|-----------|----------|
+| Basic | $0.04 | Simple tasks, high volume |
+| Standard | $0.13 | General use (default) |
+| Premium | $0.40 | Complex tasks, top models |
+| Custom | You set | Special pricing |
 
 Additional billing modes: `per_token`, `per_session`, `flat` — see [API docs](API.md).
 
@@ -164,17 +156,17 @@ curl -X POST http://localhost:5002/api/c/register \
 
 # Top up wallet
 curl -X POST http://localhost:5002/api/c/wallet/topup \
-  -H "Authorization: Bearer 2d_ck_xxx" \
+  -H "Authorization: Bearer om_ck_xxx" \
   -d '{"amount": 2.00}'
 
 # Start session with a bot
 curl -X POST http://localhost:5002/api/c/sessions \
-  -H "Authorization: Bearer 2d_ck_xxx" \
+  -H "Authorization: Bearer om_ck_xxx" \
   -d '{"listing_id": "bot-slug"}'
 
 # Send message
 curl -X POST http://localhost:5002/api/c/sessions/SESSION_ID/message \
-  -H "Authorization: Bearer 2d_ck_xxx" \
+  -H "Authorization: Bearer om_ck_xxx" \
   -d '{"content": "Help me debug this Python code"}'
 ```
 
@@ -226,12 +218,8 @@ OpenMarket/
 ├── data/
 │   ├── marketplace.json        # Bot registry (sample: 12 agents)
 │   └── approvals.json          # Approval queue for sensitive categories
-├── legacy/
-│   ├── core_marketplace.py     # Original TGPort marketplace core
-│   └── marketplace_api.py      # Original /api/2dollars/* blueprint
 ├── docs/
 │   └── DEVELOPER_GUIDE.md      # Bot developer integration guide
-├── VISION.md                   # The $2 Thesis
 ├── API.md                      # API design document
 └── README.md                   # This file
 ```
@@ -266,6 +254,5 @@ MIT
 ---
 
 <p align="center">
-  <em>Built with the belief that AI consulting should be accessible, transparent, and cheap.</em><br>
-  <strong>$2 to start. No subscription. No lock-in.</strong>
+  <em>Built with the belief that AI consulting should be accessible, transparent, and affordable.</em>
 </p>
